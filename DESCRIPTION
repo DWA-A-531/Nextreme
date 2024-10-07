@@ -1,0 +1,17 @@
+Package: Nextreme
+Type: Package
+Title: Statistische Analyse der Niederschlagsextremwerte nach Arbeitsblatt DWA-A 531
+Version: 1.2.0
+Author: Dr.-Ing. Bora Shehu, Dr.-Ing. Winfrid Willems
+Maintainer: Bora Shehu <bora.shehu@uni-potsdam.de>
+Description: Dieses Paket wird zusammen mit dem DWA-A 531 Merkblatt zur Verfügung gestellt und dient als Grundlage für die Berechnung lokaler Niederschlagsextremstatistiken in Deutschland. Lokal bedeutet, dass Niederschlagsbeobachtungen in 5min-Zeitschritten zur Anpassung der Extremwertverteilung verwendet werden. Die Theorie und die Begründung der Methoden sind im DWA-A 531 Merkblatt beschrieben. Alternativ ermöglicht es das Paket, Extremwerte und die berechneten Niederschlagsstatistiken aus den KOSTRA 2020 Karten (bereitgestellt vom Deutschen Wetterdienst - Klimadatenzentrum) zu lesen. Bitte beachten Sie, dass das R-Paket nicht von einem IT-Ingenieur entwickelt wurde und daher möglicherweise nicht den besten Schreibstrategien folgt oder nicht viel Flexibilität bietet. Um sicher zu gehen, dass die Funktionen so laufen, wie sie sollen, halten Sie sich bitte an das angegebene Datenformat! 
+License: DWA-A 531 Merkblatt
+Encoding: UTF-8
+LazyData: true
+Imports: evd, lmomco, lubridate, rdwd, terra
+Depends: R (>= 2.10)
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 7.2.3
+NeedsCompilation: no
+Packaged: 2024-06-07 17:48:35 UTC; shehu
