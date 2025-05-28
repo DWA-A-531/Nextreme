@@ -24,12 +24,8 @@ Das Verfahren ermittelt die sensorspezifischen Mittelwerte der Serienwerte, subt
 Ist der Zielsensor nicht in Sensor enthalten, dann wird der Eingabevektor wieder zurueckgeliefert.
 }
 \examples{
-library(data.table)
 n1=50;n2=50;m1=10;m2=20
-Sensor = c(rep("analog",n1),rep("digital",n2)); Wert = c(rnorm(n1,m1),rnorm(n2,m2))                                 # synthetische Daten, ein Sensorwechsel ab dem 51. Wert
-par(mfrow=c(2,1))
-data.table(Wert,Sprung_Elimination(Wert,Sensor))[,{plot(Wert,pch=1,cex=2);points(SerieNeu,col=2,pch=15)}]
-n1=30;n2=40;n3=30;m1=30;m2=20;m3=40
-Sensor = c(rep("analog1",n1),rep("analog2",n2),rep("digital",n3)); Wert = c(rnorm(n1,m1),rnorm(n2,m2),rnorm(n3,m3)) # synthetische Daten, zwei Sensorwechsel
-data.table(Wert,Sprung_Elimination(Wert,Sensor))[,{plot(Wert,pch=1,cex=2);points(SerieNeu,col=2,pch=15)}]
+# synthetische Daten, ein Sensorwechsel ab dem 51. Wert
+Sensor = c(rep("analog",n1),rep("digital",n2)); Wert = c(rnorm(n1,m1),rnorm(n2,m2))
+plot(Wert,Sprung_Elimination(Wert,Sensor)$SerieNeu, xlab="Original", ylab="Korrektur")
 }

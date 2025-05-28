@@ -8,14 +8,20 @@
 #' @details
 #' R-Funktion zur Berechnung der Wiederkehrintervalle (in Jahren) bestimmter Regenhoehen (in mm) bei verschiedenen Dauern (in Minuten).
 #' @examples
-#' # Berechnung der Starkregenparameter fuer die Station Goerlitz im Zeitraum 1991-2020, ohne Intervall-oder Sprungkorrektur ueber alle Dauern mit der GEV-Verteilung und dem Formparameter von -0,1
-#' extremParameter = Parameter_Schaetzung(Serie=Goerlitz_iN,Dauern=c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080), methGEV="GEV", formTyp="FIX", Gamma=-0.1)
+#' # Berechnung der Starkregenparameter fuer die Station Goerlitz im Zeitraum 1991-2020,
+#' # ohne Intervall-oder Sprungkorrektur ueber alle Dauern
+#' # mit der GEV-Verteilung und dem Formparameter von -0,1
+#' Dauern=c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080)
+#' extremParameter = Parameter_Schaetzung(Goerlitz_iN,Dauern, methGEV="GEV", formTyp="FIX", Gamma=-0.1)
 #' print(extremParameter)
-#' Während eines Starkregenereignisses am 18. Juli 2010 wurden an der Station Görlitz 58,6 mm Niederschlagsvolumen in 6 Stunden gemessen. Basierend auf den geschätzten Parametern beträgt die berechnete Wiederkehrperiode:
-#' Ta_Ereignis = Ta_schaetzung(extremParameter, Dauern = 360, hN= 58.6, methGEV="GEV")
-#' # Auf der Grundlage dieser Parameter wird die entsprechende Wiederkehrintervalle fuer die Niederschlagsmenge von 40 mm ermittelt, die der Dauer von 60, 120 und 240 Minuten entspricht.
+#' # Am 18 Juli 2010 wurden an der Station Goerlitz 58,6 mm in 6 Stunden gemessen.
+#' # Basierend auf den geschaetzten Parametern betraegt die berechnete Wiederkehrperiode:
+#' Ta_Ereignis = Tn_Schaetzung(extremParameter, Dauern = 360, hN= 58.6, methGEV="GEV")
+#' # Auf der Grundlage dieser Parameter wird die entsprechende Wiederkehrintervalle fuer
+#' # die Niederschlagsmenge hN=40 mm und Dauern 60, 120 und 240 Minuten:
 #' Ta_Ereignis = Tn_Schaetzung(extremParameter, Dauern = c(60,120,360), hN= c(40,40,40), methGEV="GEV")
-#' # Auf der Grundlage dieser Parameter wird die entsprechende Wiederkehrintervalle fuer die Niederschlagsmenge von 50, 90 und 95 mm ermittelt, die der Dauer von 240, 720 und 1440 Minuten entspricht.
+#' # Auf der Grundlage dieser Parameter wird die entsprechende Wiederkehrintervalle fuer
+#' # die Niederschlagsmenge hN=c(50,90,95) mm und Dauern 240, 720 und 1440 Minuten:
 #' Ta_Ereignis = Tn_Schaetzung(extremParameter, Dauern = c(240,720,1440), hN= c(50,90,95), methGEV="GEV")
 #' @return Eine Tabelle im data.frame-Format, die die Wiederkehrintervalle fuer die gegebene Regenhoehe und -dauer enthaelt. Die Spalten geben die Regenhoehe (hN), die Dauer (D) und die Jaehrlichkeit (Tn) an.
 Tn_Schaetzung = function(extrem.Parameter,
@@ -56,20 +62,19 @@ Tn_Schaetzung = function(extrem.Parameter,
   if(class(methGEV)!="character") stop("Das methGEV Input sollte vom Charaktertyp sein!")
   else if(length(methGEV)!=1) stop("Das methGEV Input sollte nur 1 Element haben!")
 
-  require(lmomco)
   Dauern_inStunden        = Dauern/60
   bD         = (Dauern_inStunden+extrem.Parameter$Theta)^extrem.Parameter$Eta
 
   alle.Inten      = (hN/Dauern*60)*bD
 
   if(methGEV=="GEV"){
-    pars           = lmomco::pargev(lmom.ub(1:10))
+    pars           = lmomco::pargev(lmomco::lmom.ub(1:10))
     pars$para[1]   = extrem.Parameter$Mu
     pars$para[2]   = extrem.Parameter$Sigma
     pars$para[3]   = extrem.Parameter$Gamma
     probs          = lmomco::cdfgev(alle.Inten, pars)
   }else if (methGEV=="GUM"){
-    pars           = lmomco::pargum(lmom.ub(1:10))
+    pars           = lmomco::pargum(lmomco::lmom.ub(1:10))
     pars$para[1]   = extrem.Parameter$Mu
     pars$para[2]   = extrem.Parameter$Sigma
     probs          = lmomco::cdfgev(alle.Inten, pars)

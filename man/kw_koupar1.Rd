@@ -16,9 +16,9 @@ kw_koupar1(
 \arguments{
 \item{Theta}{Der erste Koutsoyiannis-Parameter}
 
-\item{Inten.Daten}{der extrahierten jaehrlichen Serien, nicht als maximale Niederschlagsvolume, sondern als maximale Niederschlagsintensitaet in mm/h, angegeben fuer jede Regendauer (D) und jedes Jahr.// Format data.frame(ncol = Regendauer, nrow=Jahre)}
+\item{Inten.Daten}{der extrahierten jaehrlichen Serien, nicht als maximale Niederschlagsvolume, sondern als maximale Niederschlagsintensitaet in mm/h, angegeben fuer jede Dauer (D) und jedes Jahr.// Format data.frame(ncol = Dauer, nrow=Jahre)}
 
-\item{Dauern}{Regendauern (h), die fuer die Berechnung der jaehrlichen Serien verwendet sind, in Stunden!}
+\item{Dauern}{Dauern (h), die fuer die Berechnung der jaehrlichen Serien verwendet sind, in Stunden!}
 
 \item{Partition}{die Anzahl der Extremwerte pro Dauer, die in die Berechnung der Gesamtintensitaet einbezogen werden sollen (1/3 oder 1/2 aller Daten)}
 
@@ -37,10 +37,10 @@ Die Optimierung der Koutsoyiannis-Parameter durch Minimierung der Kruskal-Wallis
 \deqn{KW =  \frac{12}{m(m+1)} \sum_{D=1}^{k} n_D ( \bar{r}_D - \frac{m+1}{2} )^2}
 wo:
 \itemize{
-  \item \eqn{m} Hoechster Rang fuer die Intensitaeten: Anzahl aller Beobachtungen fuer die gesamten Regendauern
-  \item \eqn{k} Anzahl aller Regendauern, die fuer die Berechnung der jaehrlichen Serien verwendet sind
+  \item \eqn{m} Hoechster Rang fuer die Intensitaeten: Anzahl aller Beobachtungen fuer die gesamten Dauern
+  \item \eqn{k} Anzahl aller Dauern, die fuer die Berechnung der jaehrlichen Serien verwendet sind
   \item \eqn{n_D} Anzahl der Jahre oder Anzahl der Extremewerte fuer jede Dauer \eqn{D} .
-  \item \eqn{\bar{R}_D} Mittlerer Rang fuer die Stichprobe jede Regendauer \eqn{D}
+  \item \eqn{\bar{R}_D} Mittlerer Rang fuer die Stichprobe jede Dauer \eqn{D}
 }
 \deqn{KW\left( \theta,\eta \right) \rightarrow Min}
 wo:

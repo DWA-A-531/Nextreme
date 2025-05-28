@@ -11,23 +11,22 @@
 #' @return Es wird eine Tabelle im Dataframe-Format mit den Koordinaten und den entsprechenden geschaetzten KOSTRA-DWD-2020-Regenhoehen fuer die angegebenen Standorte (in jeder Zeile angegeben), die Regendauer und die Wiederkehrintervalle (in jeder Spalte angegeben) zurueckgegeben.  Falls auch die Unsicherheit gewuenscht ist, wird eine Liste mit zwei Dataframes zurueckgegeben (eine fuer die Regenhoehe - Kostra_HN und eine fuer die Unsicherheit - Kostra_UC). Fuer Standorte ausserhalb der KOSTRA-DWD-2020 Bereiche werden NA-Werte zurueckgegeben.
 #' @examples
 #' Station = data.frame(Stations_id = 01684, geoBreite = 51.1621, geoLaenge = 14.9506)
-#' Kostra_Hn = Kostra2020_hN_Schaetzung(Standorte = Station, Dauern = c(5,10,15), Tn=c(50,100), Unsicherheit=F)
+#' Dauern = c(5,10,15)
+#' Tn = c(50,100)
+#' Kostra_Hn = Kostra2020_hN_Schaetzung(Station, Dauern, Tn, Unsicherheit=FALSE)
 #' print(Kostra_Hn)
-#' Kostra_Werte = Kostra2020_hN_Schaetzung(Standorte = Station, Dauern = c(5,10,15), Tn=c(50,100), Unsicherheit=T)
+#' Kostra_Werte = Kostra2020_hN_Schaetzung(Station, Dauern, Tn, Unsicherheit=TRUE)
 #' Kostra_Hn = Kostra_Werte$Kostra_HN
 #' print(Kostra_Hn)
 #' Kostra_UC = Kostra_Werte$Kostra_UC
 #' print(Kostra_UC)
-#' Kostra_UK_HN = Kostra_Werte$Kostra_HN[,-(1:3)] - Kostra_Werte$Kostra_UC[,-(1:3)]*Kostra_Werte$Kostra_HN[,-(1:3)]/100
-#' Kostra_OK_HN = Kostra_Werte$Kostra_HN[,-(1:3)] + Kostra_Werte$Kostra_UC[,-(1:3)]*Kostra_Werte$Kostra_HN[,-(1:3)]/100
+#' Kostra_UK_HN = Kostra_Hn[,-(1:3)] - Kostra_UC[,-(1:3)]*Kostra_Hn[,-(1:3)]/100
+#' Kostra_OK_HN = Kostra_Hn[,-(1:3)] + Kostra_UC[,-(1:3)]*Kostra_Hn[,-(1:3)]/100
 Kostra2020_hN_Schaetzung = function(Standorte,
                                     Dauern=c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080),
                                     Tn=c(1,5,10,20,50,100),
                                     Temp_Pfad = "./",
-                                    Unsicherheit = T){
-  require(terra)
-  require(rdwd)
-  require(lubridate)
+                                    Unsicherheit = TRUE){
   Kostra_Dauern = c(5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 360, 540, 720, 1080, 1440, 2880, 4320, 5760, 7200, 8640, 10080)
   Kostra_Tn     = c(1, 2, 3, 5, 10, 20, 30, 50, 100)
   if(missing(Standorte)) stop("Das Standorte Input ist nicht vorhanden! Bitte geben Sie die Standorte als data.frame an.")
@@ -58,9 +57,12 @@ Kostra2020_hN_Schaetzung = function(Standorte,
   else if(length(Unsicherheit)!=1) stop("Das Unsicherheit Input soll nur eine einzige Wert haben: entweder False oder True!")
   else if(Unsicherheit%in%c(TRUE, FALSE)==F) stop("Das Unsicherheit Input soll entweder False oder True sein!")
 
-  KOSTRA_Link <- "return_periods/precipitation/KOSTRA/KOSTRA_DWD_2020/asc/"
-  data("gridIndex")
-  KOSTRA_AllFiles <- grep(KOSTRA_Link, gridIndex, value=TRUE)
+  KOSTRA_Link <- "https://opendata.dwd.de/climate_environment/CDC/grids_germany/return_periods/precipitation/KOSTRA/KOSTRA_DWD_2020/asc/"
+  KOSTRA_htmllines <- readLines(KOSTRA_Link, warn = FALSE)
+  # Find lines with "_ASC.zip"
+  zip_lines <- grep("_ASC\\.zip", KOSTRA_htmllines, value = TRUE)
+  # Extract the filenames
+  KOSTRA_AllFiles <- gsub('.*href="([^"]+_ASC\\.zip)".*', '\\1', zip_lines)
 
   ### das Koordinatenreferenzsystem fuer die eingegebenen Stationsdaten angeben
   station_CRS = "+proj=longlat +datum=WGS84"
@@ -68,46 +70,46 @@ Kostra2020_hN_Schaetzung = function(Standorte,
   Kostra_CRS = "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs +type=crs"
 
   # aenderung der Koordinaten der Stationen in das Ausgabekoordinatensystem.
-  station_shp = vect(Standorte, geom =c("geoLaenge","geoBreite"), crs=station_CRS)
-  station_shp = project(station_shp, Kostra_CRS)
+  station_shp = terra::vect(Standorte, geom =c("geoLaenge","geoBreite"), crs=station_CRS)
+  station_shp = terra::project(station_shp, Kostra_CRS)
 
   temp = tempfile()
   if (dir.exists(Temp_Pfad)==T) temp = tempfile(tmpdir = Temp_Pfad)
   Kostra_HN_perDauer = do.call(cbind, lapply(Dauern, function(Dauer){
     Dauer_Datei = grep(formatC(Dauer,width=5,flag=0, format="d"),KOSTRA_AllFiles, value=TRUE)
-    download.file(paste0(gridbase,"/",Dauer_Datei),temp)
+    utils::download.file(paste0(KOSTRA_Link,"/",Dauer_Datei),temp)
     Dauer_Daten = do.call(cbind, lapply(Tn, function(tn){
       tn_Datei =  paste0("Hn_KOSTRA-DWD-2020_D",formatC(Dauer,width=5,flag=0, format="d"),"_T", formatC(tn,width=3,flag=0), ".asc")
-      unzip(temp,tn_Datei, exdir = "./")
-      tn_Daten = rast(tn_Datei)
-      crs(tn_Daten) = Kostra_CRS
-      tn_output = extract(tn_Daten, station_shp)[,-1]
+      utils::unzip(temp,tn_Datei, exdir = "./")
+      tn_Daten = terra::rast(tn_Datei)
+      terra::crs(tn_Daten) = Kostra_CRS
+      tn_output = terra::extract(tn_Daten, station_shp)[,-1]
       return(matrix(tn_output, ncol=1))
     }))
     return(Dauer_Daten)
   }))
   Kostra_HN_perDauer = as.data.frame(Kostra_HN_perDauer)
   names(Kostra_HN_perDauer) = unlist(lapply(Dauern, function(D) unlist(lapply(Tn, function(tn) paste0("D",formatC(D,width=5,flag=0, format="d"),"_T",formatC(tn,width=3,flag=0))))))
-  Kostra_HN = data.frame(ID=Standorte$Stations_id, geoBreite = Standorte$geoBreite, geoLaenge = Station$geoLaenge, Kostra_HN_perDauer)
+  Kostra_HN = data.frame(ID=Standorte$Stations_id, geoBreite = Standorte$geoBreite, geoLaenge = Standorte$geoLaenge, Kostra_HN_perDauer)
 
   Kostra_UC_perDauer = do.call(cbind, lapply(Dauern, function(Dauer){
     Dauer_Datei = grep(formatC(Dauer,width=5,flag=0, format="d"),KOSTRA_AllFiles, value=TRUE)
-    download.file(paste0(gridbase,"/",Dauer_Datei),temp)
+    utils::download.file(paste0(KOSTRA_Link,"/",Dauer_Datei),temp)
     Dauer_Daten = do.call(cbind, lapply(Tn, function(tn){
       tn_Datei =  paste0("UC_KOSTRA-DWD-2020_D",formatC(Dauer,width=5,flag=0, format="d"),"_T", formatC(tn,width=3,flag=0), ".asc")
-      unzip(temp,tn_Datei, exdir = "./")
-      tn_Daten = rast(tn_Datei)
-      crs(tn_Daten) = Kostra_CRS
-      tn_output = extract(tn_Daten, station_shp)[,-1]
+      utils::unzip(temp,tn_Datei, exdir = "./")
+      tn_Daten = terra::rast(tn_Datei)
+      terra::crs(tn_Daten) = Kostra_CRS
+      tn_output = terra::extract(tn_Daten, station_shp)[,-1]
       return(matrix(tn_output, ncol=1))
     }))
     return(Dauer_Daten)
   }))
   Kostra_UC_perDauer = as.data.frame(Kostra_UC_perDauer)
   names(Kostra_UC_perDauer) = unlist(lapply(Dauern, function(D) unlist(lapply(Tn, function(tn) paste0("D",formatC(D,width=5,flag=0, format="d"),"_T",formatC(tn,width=3,flag=0))))))
-  Kostra_UC = data.frame(ID=Standorte$Stations_id, geoBreite = Standorte$geoBreite, geoLaenge = Station$geoLaenge, Kostra_UC_perDauer)
+  Kostra_UC = data.frame(ID=Standorte$Stations_id, geoBreite = Standorte$geoBreite, geoLaenge = Standorte$geoLaenge, Kostra_UC_perDauer)
 
-  if(Unsicherheit==T) Kostra_hN_Schaetzng = list(Kostra_HN = Kostra_HN, Kostra_UC = Kostra_UC)
-  if(Unsicherheit==F) Kostra_hN_Schaetzng = Kostra_HN
+  if(Unsicherheit==TRUE) Kostra_hN_Schaetzng = list(Kostra_HN = Kostra_HN, Kostra_UC = Kostra_UC)
+  if(Unsicherheit==FALSE) Kostra_hN_Schaetzng = Kostra_HN
   return(Kostra_hN_Schaetzng)
 }

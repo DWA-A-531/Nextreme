@@ -13,16 +13,16 @@ Unsicherheit_Schaetzung(
   Gamma = -0.1,
   nBoots = 100,
   rSeed = 1232,
-  SerieTyp = "DDF",
+  SerieTyp = "VOL",
   Konfidenzgrenzen = c(0.05, 0.95)
 )
 }
 \arguments{
-\item{Serie}{Jaehrliche Maximum Serien (als Regenintensitaet in mm/h) werden als Tabelle (data.frame Format), wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Regendauern bezeichnen.}
+\item{Serie}{Jaehrliche Maximum Serien (als Regenintensitaet in mm/h) werden als Tabelle (data.frame Format), wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen.}
 
 \item{Tn}{die Wiederkehrintervalle, fuer die die Regenhoehe/Intensitaet berechnet werden sollen. Die Wiederkehrintervalle sollten in Jahren angegeben werden!}
 
-\item{Dauern}{Regendauern, die fuer die Berechnung der Jaehrliche Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15,30,60,120,360,720,1440, 2880, 4320 und 10080min.}
+\item{Dauern}{Dauern, die fuer die Berechnung der Jaehrliche Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15,30,60,120,360,720,1440, 2880, 4320 und 10080min.}
 
 \item{methGEV}{den Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Serien angepasst werden soll. Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Form-Parameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Form-Parameter ist gleich Null – Gumbel Verteilung)}
 
@@ -34,7 +34,7 @@ Unsicherheit_Schaetzung(
 
 \item{rSeed}{Random Seed fuer das Bootstrapping und die Realisationen, um die gleiche Ausgabe fuer jede gleiche Eingabe zu garantieren.}
 
-\item{SerieTyp}{Kontrolle ueber die Einheiten der Ausgabetabelle. Die Optionen sind: "DDF" fuer Regenhoehe in mm, und "IDF" fuer Regenintensitaet in mm/h.}
+\item{SerieTyp}{Kontrolle ueber die Einheiten der Ausgabetabelle. Die Optionen sind: "VOL" fuer Regenhoehe in mm/Dauer, und "INT" fuer Regenintensitaet in mm/h.}
 
 \item{Konfidenzgrenzen}{Perzentile der nBoots-Realisierungen, die die Funktion zurueckbringen soll. Das Format sollte Vektor sein, wobei der erste Wert fuer die untere Konfidenzgrenze und der zweite Wert fuer die obere Konfidenzgrenze steht.}
 }
@@ -53,34 +53,53 @@ Die folgende Formel kann verwendet werden:
 }
 \examples{
 # Beispiel 1
-# Berechnung der Stichprobenunsicherheit durch 50 Realisierungen fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020.
-Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=100, nBoots =50, rSeed=15, SerieTyp="DDF" )
+# Berechnung der Stichprobenunsicherheit durch 50 Realisierungen
+# fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020:
+Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=100, nBoots =50, rSeed=15, SerieTyp="VOL" )
 # aus der Unsicherheit nur die Quantils Information extrahieren
 HN_KI  = Unsicherheit$QUA_INFO
 dauern = c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080)
-# das geschaetzte Konfidenzintervall fuer 100 Jahre Wiederkehrintervalle und die gegebenen Dauern darstellen.
+# das geschaetzte Konfidenzintervall fuer Tn=100 und die gegebenen Dauern darstellen:
 library(scales)
-plot(dauern, HN_KI$Mittelwert["100",], type="l", lwd=2, lty=1, log="xy", ylim=range(HN_KI$`95\%`["100",], HN_KI$`5\%`["100",]), col="royalblue",
-    ylab="Hn [mm]", xlab="Dauer [min]", main = "Station Goerlitz")
-polygon(c(dauern, rev(dauern)), c(HN_KI$`5\%`["100",], rev(HN_KI$`95\%`["100",])), col=alpha("royalblue",0.5), border=NA)
-legend("topleft", c("95\%KI", "Mittelwert"),  col=c(alpha("royalblue",0.5), "royalblue"), lty=c(1, 1), lwd=c(10,2), title = "Legende", bty="n")
-# Relative Unsicherheit fuer 100 Jahre Wiederkehrintervalle und die gegebenen Dauern darstellen.
-barplot(unlist(HN_KI$rel.Unsicherheit["100",]), ylab=expression('100 x(K'[o]~-~K[u]~')/K'),xlab="Dauern [min]",main="Tn=100Jahre", col = hcl.colors(12, palette = "viridis"))
+plot(dauern, HN_KI$Mittelwert["100",], type="l", lwd=2, lty=1, log="xy",
+ ylim=range(HN_KI$`95\%`["100",], HN_KI$`5\%`["100",]), col="royalblue",
+ ylab="Hn [mm]", xlab="Dauer [min]", main = "Station Goerlitz")
+polygon(c(dauern, rev(dauern)),
+ c(HN_KI$`5\%`["100",], rev(HN_KI$`95\%`["100",])),
+ col=alpha("royalblue",0.5), border=NA)
+legend("topleft", c("95\%KI", "Mittelwert"),
+ col=c(alpha("royalblue",0.5), "royalblue"), lty=c(1, 1),
+ lwd=c(10,2), title = "Legende", bty="n")
+# Relative Unsicherheit fuer T =100 und die gegebenen Dauern darstellen:
+barplot(unlist(HN_KI$rel.Unsicherheit["100",]),
+ ylab=expression('100 x(K'[o]~-~K[u]~')/K'),xlab="Dauern [min]",
+ main="Tn=100Jahre", col = hcl.colors(12, palette = "viridis"))
 
 #  Beispiel 2
-# Berechnung der Stichprobenunsicherheit durch 100 Realisierungen fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020. Wiederkehrintervalle von 20, 50 und 100 Jahren betrachten.
-Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=c(20,50,100), nBoots =100, rSeed=15, SerieTyp="DDF")
+# Berechnung der Stichprobenunsicherheit durch 100 Realisierungen
+# fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020.
+# Wiederkehrintervalle von 20, 50 und 100 Jahren betrachten.
+Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=c(20,50,100),
+ nBoots =100, rSeed=15, SerieTyp="VOL")
 # aus der Unsicherheit nur die Parameterformation extrahieren
 PAR_KI  = Unsicherheit$PAR_INFO
 print(PAR_KI)
 # aus der Unsicherheit nur die Quantils Information extrahieren
 hN_KI   = Unsicherheit$QUA_INFO
-# Relative Unsicherheit fuer die gegebene Wiederkehrintervalle und Dauern darstellen.
-barplot(as.matrix(hN_KI$rel.Unsicherheit), beside=T, ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50), xaxt='n', xlab="Dauern [min]",main="Station Goerlitz", col=c("royalblue1","royalblue3", "royalblue4"))
-legend("top",legend=rownames(hN_KI$rel.Unsicherheit), fill = c("royalblue1","royalblue3", "royalblue4"), bty="n", title="Ta")
+# Relative Unsicherheit fuer die gegebene Wiederkehrintervalle und Dauern:
+barplot(as.matrix(hN_KI$rel.Unsicherheit), beside=TRUE,
+ ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50), xaxt='n',
+ xlab="Dauern [min]",main="Station Goerlitz",
+ col=c("royalblue1","royalblue3", "royalblue4"))
+legend("top",legend=rownames(hN_KI$rel.Unsicherheit),
+ fill = c("royalblue1","royalblue3", "royalblue4"), bty="n", title="Ta")
 # Alternativ Darstellung
-barplot(as.matrix(t(hN_KI$rel.Unsicherheit)), beside=T, ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50), xaxt='n',main="Station Goerlitz", col=hcl.colors(12, palette = "viridis"))
+barplot(as.matrix(t(hN_KI$rel.Unsicherheit)), beside=TRUE,
+  ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50),
+  xaxt='n',main="Station Goerlitz", col=hcl.colors(12, palette = "viridis"))
 axis(1, at = c(7, 20, 34), rownames(hN_KI$rel.Unsicherheit))
 legend_order <- matrix(1:12,ncol=6,byrow = TRUE)
-legend("top",legend=dauern[legend_order], fill=hcl.colors(12, palette = "viridis")[legend_order],  bty="n",title="Daurn [min]", cex=0.6, ncol=6)
+legend("top",legend=dauern[legend_order],
+ fill=hcl.colors(12, palette = "viridis")[legend_order],
+ bty="n",title="Daurn [min]", cex=0.6, ncol=6)
 }

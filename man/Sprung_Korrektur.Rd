@@ -7,7 +7,7 @@
 Sprung_Korrektur(Serie, Sensorwechsel)
 }
 \arguments{
-\item{Serie}{Jaehrliche Reihen als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Regendauern bezeichnen (in Minuten!).}
+\item{Serie}{Jaehrliche Reihen als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen (in Minuten!).}
 
 \item{Sensorwechsel}{Der Zeitpunkt, zu dem der Sensor von einem analogen auf einen digitalen Sensor umgestellt wurde. Angegeben als as.POSIXct-Format.}
 }
@@ -15,14 +15,14 @@ Sprung_Korrektur(Serie, Sensorwechsel)
 Die korrigierte jaehrlichen Serien als data.frame wird zurueckgegeben (das gleiche Format wie die Eingabe).
 }
 \description{
-Die jaehrlichen Serien von kurzen Regendauern werden vom Sprung-Instationaritaet korrigiert, der durch den Wechsel der Messsensoren von analoger zu digitaler Technologie verursacht werden koennte.
+Die jaehrlichen Serien von kurzen Dauern werden vom Sprung-Instationaritaet korrigiert, der durch den Wechsel der Messsensoren von analoger zu digitaler Technologie verursacht werden koennte.
 Analogsensoren: Regenschreiber, Unbekannt oder unbekannt
 Digitalsensoren: H3, Tropfengeber, Wippengeber, Pluvio oder PLUVIO
-1. Zuerst wird ein Instationaritaet-Test fuer die Jahresreihen mit einer Dauer von 30 Minuten oder weniger durchgefuehrt.
+1. Zuerst wird ein Instationaritaet Test fuer die Jahresreihen mit einer Dauer von 30 Minuten oder weniger durchgefuehrt.
 2. Wenn die Instationaritaet vom Typ "Sprung" ist, dann wird eine Sprungkorrektur angewendet.
 }
 \details{
-Wenn es einen Sprung gibt - Typ Instaionaritaet auf der jaehrlichen Serie von kurzen Dauern, wird der Sprung eliminiert und eine korrigierte jaehrliche Serientabelle zurueckgegeben.
+Wenn es einen Sprung gibt - Typ Instationaritaet auf der jaehrlichen Serie von kurzen Dauern, wird der Sprung eliminiert und eine korrigierte jaehrliche Serientabelle zurueckgegeben.
 }
 \examples{
 wechselDatum = as.Date("1992-12-31", format=c("\%Y-\%m-\%d"))

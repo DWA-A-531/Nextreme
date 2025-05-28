@@ -12,7 +12,7 @@
 #' @param Gamma den vorbestimmten Wert des GEV-Form-Parameters angeben. Nur wichtig fuer die Variante von methGEV=„GEV“ und formTyp=„FIX“.
 #' @param nBoots die Anzahl der zufaelligen Realisierungen, die aus den jaehrlichen Serien zu ziehen sind.
 #' @param rSeed Random Seed fuer das Bootstrapping und die Realisationen, um die gleiche Ausgabe fuer jede gleiche Eingabe zu garantieren.
-#' @param SerieTyp Kontrolle ueber die Einheiten der Ausgabetabelle. Die Optionen sind: "VOL" fuer Regenhoehe in mm, und "INT" fuer Regenintensitaet in mm/h.
+#' @param SerieTyp Kontrolle ueber die Einheiten der Ausgabetabelle. Die Optionen sind: "VOL" fuer Regenhoehe in mm/Dauer, und "INT" fuer Regenintensitaet in mm/h.
 #' @param Konfidenzgrenzen  Perzentile der nBoots-Realisierungen, die die Funktion zurueckbringen soll. Das Format sollte Vektor sein, wobei der erste Wert fuer die untere Konfidenzgrenze und der zweite Wert fuer die obere Konfidenzgrenze steht.
 #' @details
 #' Die Unsicherheit wird auf der Basis der Breite der Konfidenzgrenzen geschaetzt, die aus nBoots-Realisierungen fuer einen bestimmten Wert (entweder Parameter oder Quantil) erhalten sind.
@@ -20,36 +20,55 @@
 #' @return Ein List  der die erhaltenen nBoots-Realisierungen fuer die Quantils (erster Eintrag ~  QUA_INFO) und fuer die Parameter (zweiter Eintrag ~ PAR_INFO) enthaelt.
 #' @examples
 #' # Beispiel 1
-#' # Berechnung der Stichprobenunsicherheit durch 50 Realisierungen fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020.
+#' # Berechnung der Stichprobenunsicherheit durch 50 Realisierungen
+#' # fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020:
 #' Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=100, nBoots =50, rSeed=15, SerieTyp="VOL" )
 #' # aus der Unsicherheit nur die Quantils Information extrahieren
 #' HN_KI  = Unsicherheit$QUA_INFO
 #' dauern = c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080)
-#' # das geschaetzte Konfidenzintervall fuer 100 Jahre Wiederkehrintervalle und die gegebenen Dauern darstellen.
+#' # das geschaetzte Konfidenzintervall fuer Tn=100 und die gegebenen Dauern darstellen:
 #' library(scales)
-#' plot(dauern, HN_KI$Mittelwert["100",], type="l", lwd=2, lty=1, log="xy", ylim=range(HN_KI$`95%`["100",], HN_KI$`5%`["100",]), col="royalblue",
-#'     ylab="Hn [mm]", xlab="Dauer [min]", main = "Station Goerlitz")
-#' polygon(c(dauern, rev(dauern)), c(HN_KI$`5%`["100",], rev(HN_KI$`95%`["100",])), col=alpha("royalblue",0.5), border=NA)
-#' legend("topleft", c("95%KI", "Mittelwert"),  col=c(alpha("royalblue",0.5), "royalblue"), lty=c(1, 1), lwd=c(10,2), title = "Legende", bty="n")
-#' # Relative Unsicherheit fuer 100 Jahre Wiederkehrintervalle und die gegebenen Dauern darstellen.
-#' barplot(unlist(HN_KI$rel.Unsicherheit["100",]), ylab=expression('100 x(K'[o]~-~K[u]~')/K'),xlab="Dauern [min]",main="Tn=100Jahre", col = hcl.colors(12, palette = "viridis"))
+#' plot(dauern, HN_KI$Mittelwert["100",], type="l", lwd=2, lty=1, log="xy",
+#'  ylim=range(HN_KI$`95%`["100",], HN_KI$`5%`["100",]), col="royalblue",
+#'  ylab="Hn [mm]", xlab="Dauer [min]", main = "Station Goerlitz")
+#' polygon(c(dauern, rev(dauern)),
+#'  c(HN_KI$`5%`["100",], rev(HN_KI$`95%`["100",])),
+#'  col=alpha("royalblue",0.5), border=NA)
+#' legend("topleft", c("95%KI", "Mittelwert"),
+#'  col=c(alpha("royalblue",0.5), "royalblue"), lty=c(1, 1),
+#'  lwd=c(10,2), title = "Legende", bty="n")
+#' # Relative Unsicherheit fuer T =100 und die gegebenen Dauern darstellen:
+#' barplot(unlist(HN_KI$rel.Unsicherheit["100",]),
+#'  ylab=expression('100 x(K'[o]~-~K[u]~')/K'),xlab="Dauern [min]",
+#'  main="Tn=100Jahre", col = hcl.colors(12, palette = "viridis"))
 #'
 #' #  Beispiel 2
-#' # Berechnung der Stichprobenunsicherheit durch 100 Realisierungen fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020. Wiederkehrintervalle von 20, 50 und 100 Jahren betrachten.
-#' Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=c(20,50,100), nBoots =100, rSeed=15, SerieTyp="VOL")
+#' # Berechnung der Stichprobenunsicherheit durch 100 Realisierungen
+#' # fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020.
+#' # Wiederkehrintervalle von 20, 50 und 100 Jahren betrachten.
+#' Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=c(20,50,100),
+#'  nBoots =100, rSeed=15, SerieTyp="VOL")
 #' # aus der Unsicherheit nur die Parameterformation extrahieren
 #' PAR_KI  = Unsicherheit$PAR_INFO
 #' print(PAR_KI)
 #' # aus der Unsicherheit nur die Quantils Information extrahieren
 #' hN_KI   = Unsicherheit$QUA_INFO
-#' # Relative Unsicherheit fuer die gegebene Wiederkehrintervalle und Dauern darstellen.
-#' barplot(as.matrix(hN_KI$rel.Unsicherheit), beside=T, ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50), xaxt='n', xlab="Dauern [min]",main="Station Goerlitz", col=c("royalblue1","royalblue3", "royalblue4"))
-#' legend("top",legend=rownames(hN_KI$rel.Unsicherheit), fill = c("royalblue1","royalblue3", "royalblue4"), bty="n", title="Ta")
+#' # Relative Unsicherheit fuer die gegebene Wiederkehrintervalle und Dauern:
+#' barplot(as.matrix(hN_KI$rel.Unsicherheit), beside=TRUE,
+#'  ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50), xaxt='n',
+#'  xlab="Dauern [min]",main="Station Goerlitz",
+#'  col=c("royalblue1","royalblue3", "royalblue4"))
+#' legend("top",legend=rownames(hN_KI$rel.Unsicherheit),
+#'  fill = c("royalblue1","royalblue3", "royalblue4"), bty="n", title="Ta")
 #' # Alternativ Darstellung
-#' barplot(as.matrix(t(hN_KI$rel.Unsicherheit)), beside=T, ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50), xaxt='n',main="Station Goerlitz", col=hcl.colors(12, palette = "viridis"))
+#' barplot(as.matrix(t(hN_KI$rel.Unsicherheit)), beside=TRUE,
+#'   ylab=expression('100 x(K'[o]~-~K[u]~')/K'),ylim=c(0,50),
+#'   xaxt='n',main="Station Goerlitz", col=hcl.colors(12, palette = "viridis"))
 #' axis(1, at = c(7, 20, 34), rownames(hN_KI$rel.Unsicherheit))
 #' legend_order <- matrix(1:12,ncol=6,byrow = TRUE)
-#' legend("top",legend=dauern[legend_order], fill=hcl.colors(12, palette = "viridis")[legend_order],  bty="n",title="Daurn [min]", cex=0.6, ncol=6)
+#' legend("top",legend=dauern[legend_order],
+#'  fill=hcl.colors(12, palette = "viridis")[legend_order],
+#'  bty="n",title="Daurn [min]", cex=0.6, ncol=6)
 Unsicherheit_Schaetzung = function(Serie,
                                    Tn=c(2,5,10,20,50,100),
                                    Dauern=c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080),
@@ -123,7 +142,7 @@ Unsicherheit_Schaetzung = function(Serie,
     set.seed(rSeed+Boot)
     newAMS   = Serie[sample(1:dim(Serie)[1], size = dim(Serie)[1], replace=T),]
     newStats = Parameter_Schaetzung(newAMS, Dauern = Dauern, methGEV = methGEV, Gamma=Gamma, formTyp = formTyp)
-    newQuans = hN_Schaetzung(newStats, Dauern=Dauern, Tn= Tn, methGEV=methGEV, SerieTyp = SerieTyp)
+    newQuans = Quantil_Schaetzung(newStats, Dauern=Dauern, Tn= Tn, methGEV=methGEV, SerieTyp = SerieTyp)
     return(list(Pars = unlist(newStats), Quas = unlist(newQuans)))
   })
 
@@ -132,7 +151,7 @@ Unsicherheit_Schaetzung = function(Serie,
   QUA_Boots = do.call(rbind, lapply(All_Boots, function(i) i$Quas))
 
   QUA_INFO   = lapply(Konfidenzgrenzen, function(x) {
-    data = as.data.frame(matrix(apply(QUA_Boots, 2, function(sim) quantile(sim, prob=x, na.rm=T)), nrow=length(Tn), ncol=length(Dauern), byrow=F))
+    data = as.data.frame(matrix(apply(QUA_Boots, 2, function(sim) stats::quantile(sim, prob=x, na.rm=T)), nrow=length(Tn), ncol=length(Dauern), byrow=F))
     rownames(data) = Tn
     colnames(data) = Dauern
     return(data)
@@ -144,7 +163,7 @@ Unsicherheit_Schaetzung = function(Serie,
   QUA_INFO$rel.Unsicherheit = 100*(QUA_INFO[[2]] - QUA_INFO[[1]])/QUA_INFO$Mittelwert
 
   PAR_INFO   = lapply(Konfidenzgrenzen, function(x) {
-    data = as.data.frame(matrix(apply(PAR_Boots, 2, function(sim) quantile(as.numeric(sim), prob=x, na.rm=T)), nrow=1, byrow=F))
+    data = as.data.frame(matrix(apply(PAR_Boots, 2, function(sim) stats::quantile(as.numeric(sim), prob=x, na.rm=T)), nrow=1, byrow=F))
     colnames(data) = c("Mu", "Sigma", "Gamma", "Theta", "Eta")
     return(data)
   })

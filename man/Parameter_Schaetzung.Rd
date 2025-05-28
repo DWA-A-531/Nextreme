@@ -9,19 +9,22 @@ Parameter_Schaetzung(
   Dauern = c(5, 10, 15, 30, 60, 120, 360, 720, 1440, 2880, 4320, 10080),
   methGEV = "GEV",
   formTyp = "FIX",
-  Gamma = -0.1
+  Gamma = -0.1,
+  SerieTyp = "INT"
 )
 }
 \arguments{
-\item{Serie}{jaehrliche Maximum Serie (Regenintensitaet in mm/h) als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Regendauern bezeichnen.}
+\item{Serie}{jaehrliche Maximum Serie als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen. Die Werte der Tabelle sollten entweder als Regenintensitaet mm/h oder in Regenhoehe mm/Dauer angegeben werden. Bitte geben Sie die Einheiten entsprechend ueber die Variable SerieTyp an.}
 
-\item{Dauern}{Regendauern, die fuer die Berechnung der jaehrlichen Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15,30,60,120,360,720,1440, 2880, 4320 und 10080min.}
+\item{Dauern}{Dauern, die fuer die Berechnung der jaehrlichen Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15,30,60,120,360,720,1440, 2880, 4320 und 10080min.}
 
 \item{methGEV}{Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Maximum Serien angepasst werden soll. Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Form-Parameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Form-Parameter ist gleich Null – Gumbel Verteilung.)}
 
 \item{formTyp}{kontrolliert, wie der Formparameter der Generalized Extreme Value Distribution (nur bei methGEV=„GEV“) geschaetzt werden soll. Die Option „CON“ berechnet die Formparameter auf der Basis der L-Momente, und die Option „FIX“ erzwingt einen bestimmten Wert fuer den Formparameter (zum Beispiel -0,1).}
 
 \item{Gamma}{den vorbestimmten Wert des GEV-Form-Parameters angeben. Nur wichtig fuer die Variante von methGEV=„GEV“ und formTyp=„FIX“.}
+
+\item{SerieTyp}{Information ueber die Einheiten der Eingabetabelle (Serie). Die Optionen sind: "VOL" fuer Regenhoehe in mm/Dauer, und "INT" fuer Regenintensitaet in mm/h.}
 }
 \value{
 GEV- und Koutsoyiannis-Parameter fuer die angegebene Serie als einzeiliger data.frame. Die Namen der Variablen im data.frame sind Mu / Sigma / Gamma - jeweils fuer die GEV- Lokations- / Skalen- / Formparameter, und Theta / Eta fuer die 1./ 2. Koustoyiannis-Parameter.
@@ -37,14 +40,18 @@ Funktion zur Berechnung der Parameter, die die Niederschlagsextremwerte an einer
 2. Die GEV-Parameter werden nach der Methode der L-Momente geschaetzt (mit Ausnahme des Formparameters, der im Voraus auf einen bestimmten Wert festgelegt werden kann).
 }
 \examples{
-# Berechnung der Starkregenparameter fuer die Station Goerlitz im Zeitraum 1991-2020, ohne Intervall-oder Sprungkorrektur
+# Berechnung der Starkregenparameter fuer die Station Goerlitz im Zeitraum 1991-2020
+# ohne Intervall-oder Sprungkorrektur
 # Fall 1: ueber alle Dauern mit der GEV-Verteilung und dem Formparameter von -0,1
-extremParameter = Parameter_Schaetzung(Serie=Goerlitz_iN,Dauern=c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080), methGEV="GEV", formTyp="FIX", Gamma=-0.01)
+Dauern = c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080)
+extremParameter = Parameter_Schaetzung(Goerlitz_iN,Dauern, methGEV="GEV", formTyp="FIX", Gamma=-0.1)
 print(extremParameter)
 # Fall 2: ueber alle Dauern mit der Gumbel-Verteilung
-extremParameter = Parameter_Schaetzung(Serie=Goerlitz_iN,Dauern=c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080), methGEV="GUM")
+extremParameter = Parameter_Schaetzung(Goerlitz_iN,Dauern, methGEV="GUM")
 print(extremParameter)
-# Fall 3: ueber Dauern von mehr als einer Stunde mit der GEV-Verteilung und einem nicht festgelegten Formparameter.
-extremParameter = Parameter_Schaetzung(Serie=Goerlitz_iN[,-(1:4)],Dauern=c(60,120,360,720,1440, 2880, 4320, 10080), methGEV="GEV", formTyp="CON")
+# Fall 3: ueber Dauern von mehr als einer Stunde
+# mit der GEV-Verteilung und einem nicht festgelegten Formparameter.
+Dauern=c(60,120,360,720,1440, 2880, 4320, 10080)
+extremParameter = Parameter_Schaetzung(Goerlitz_iN[,-(1:4)],Dauern, methGEV="GEV", formTyp="CON")
 print(extremParameter)
 }

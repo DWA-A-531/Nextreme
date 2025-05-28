@@ -1,15 +1,15 @@
-#' Calculating the GEV parameters with a fixed shape (kappa parameter)
-#' @param lmom the L-moments calculated previously with the lmomco package
-#' @param kappa the fixed value of the kappa parameter (shape parameter) if kappa=NULL that it is calculated according to the Lmoments
+#' Berechnung der GEV-Parameter mit einer festen Form (Kappa) Parameter
+#' @param lmom die L-Momente, die zuvor mit dem Paket lmomco berechnet wurden
+#' @param kappa der feste Wert des Kappa-Parameters (Formparameter). Wenn kappa=NULL ist, wird der Formparameter aus den L-Momenten berechnet.
+#' @param checklmom logische Variable, die entweder TRUE oder FALSE sein kann. Gibt an, ob die L-Momente geprueft werden sollen oder nicht.
 #' @details
-#' R-Function to calculate calculate the GEV parameters when the shape parameter (kappa) is set as a certain value.
-#' @return  the gev parameters
+#' R-Funktion zur Berechnung der GEV-Parameter, wenn der Formparameter (kappa) auf einen bestimmten Wert eingestellt ist.
+#' @return  Die GEV-Parameter
 #' @examples
 #' ShapeFix = 0.1 #(nach Koutsoyiannis 2008)
 #' kappaFix = ShapeFix * -1 # vorzeichenwechsel aufgrund unterschiedl. Formeln beachten!
 #' pargev2(lmomco::lmoms(1:10),kappa= kappaFix )$para
-pargev2 = function (lmom, checklmom = TRUE, kappa=NULL, ...) { # aus lmomco, erweitert um kappa = NULL, wenn kappa != NULL, dann wird mit fixiertem kappa gesch?tzt
-  require(lmomco)
+pargev2 = function (lmom, checklmom = TRUE, kappa=NULL) { # aus lmomco, erweitert um kappa = NULL, wenn kappa != NULL, dann wird mit fixiertem kappa geschuetzt
   para <- rep(NA, 3)
   names(para) <- c("xi", "alpha", "kappa")
   SMALL <- 1e-05

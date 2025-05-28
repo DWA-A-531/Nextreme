@@ -25,7 +25,7 @@
 #'   }
 #' @return KW Kruskal-Wallis Teststatistik
 kw_koupar1 = function(Theta, Inten.Daten=Inten.Daten, Dauern=Dauern, Partition=Partition, nD=nD, m=m){
-  Eta = optimize(kw_koupar2, lower=0, upper=1, Theta=Theta, Dauern=Dauern, Inten.Daten = Inten.Daten, Partition=Partition,nD=nD,m=m, maximum=FALSE)$minimum
+  Eta = stats::optimize(kw_koupar2, lower=0, upper=1, Theta=Theta, Dauern=Dauern, Inten.Daten = Inten.Daten, Partition=Partition,nD=nD,m=m, maximum=FALSE)$minimum
   bD = (Dauern+Theta)^Eta
   alle.Inten = do.call(c, lapply(1:length(Dauern), function(i) Inten.Daten[1:Partition,i]*bD[i]))
   if(length(which(is.na(alle.Inten)==T))>0) alle.Inten = alle.Inten[-which(is.na(alle.Inten)==T)]

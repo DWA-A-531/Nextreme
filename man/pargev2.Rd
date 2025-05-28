@@ -2,23 +2,25 @@
 % Please edit documentation in R/pargev2.R
 \name{pargev2}
 \alias{pargev2}
-\title{Calculating the GEV parameters with a fixed shape (kappa parameter)}
+\title{Berechnung der GEV-Parameter mit einer festen Form (Kappa) Parameter}
 \usage{
-pargev2(lmom, checklmom = TRUE, kappa = NULL, ...)
+pargev2(lmom, checklmom = TRUE, kappa = NULL)
 }
 \arguments{
-\item{lmom}{the L-moments calculated previously with the lmomco package}
+\item{lmom}{die L-Momente, die zuvor mit dem Paket lmomco berechnet wurden}
 
-\item{kappa}{the fixed value of the kappa parameter (shape parameter) if kappa=NULL that it is calculated according to the Lmoments}
+\item{checklmom}{logische Variable, die entweder TRUE oder FALSE sein kann. Gibt an, ob die L-Momente geprueft werden sollen oder nicht.}
+
+\item{kappa}{der feste Wert des Kappa-Parameters (Formparameter). Wenn kappa=NULL ist, wird der Formparameter aus den L-Momenten berechnet.}
 }
 \value{
-the gev parameters
+Die GEV-Parameter
 }
 \description{
-Calculating the GEV parameters with a fixed shape (kappa parameter)
+Berechnung der GEV-Parameter mit einer festen Form (Kappa) Parameter
 }
 \details{
-R-Function to calculate calculate the GEV parameters when the shape parameter (kappa) is set as a certain value.
+R-Funktion zur Berechnung der GEV-Parameter, wenn der Formparameter (kappa) auf einen bestimmten Wert eingestellt ist.
 }
 \examples{
 ShapeFix = 0.1 #(nach Koutsoyiannis 2008)
