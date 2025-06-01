@@ -15,11 +15,11 @@ Dieses Paket wird zusammen mit dem DWA-A 531 Arbeitsblatt zur Verfuegung gestell
 pak::pak("DWA-A-531/Nextreme")
 ```
 
-2. Oder Sie können die Zip-Datei von [GitHub](https://github.com/) herunterladen und manuell über Rstudio installieren:
+2. Oder Sie können die Nextreme_1.2.1.tar.gz Datei von https://github.com/DWA-A-531/Nextreme/releases/tag/v1.2.1 herunterladen und manuell über Rstudio installieren:
 Tools -> Install Packages -> Install from: Package Archieve File
 
 ## Beispiele
 
-Eine Einfuehrung in das Paket mit entsprechenden Beispielen findet sich unter "vignettes/Einfuerung_Nextreme.pdf".
+Eine Einfuehrung in das Paket mit entsprechenden Beispielen findet sich unter "Einfuerung_Nextreme.pdf".
 
 Eine Liste aller verfügbaren Funktionen und kurze Beispiele finden Sie unter „Manual_Nextreme.pdf“.
