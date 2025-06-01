@@ -2,22 +2,18 @@
 #' @description
 #' Berechnung der jaehrlichen Maximum Serie (basierend auf dem Kalenderjahr) aus einer Niederschlagszeitreihe und gegebenen Dauern.
 #' @param Regendaten gemessene Regenzeitreihen in festen Intervallen (vorzugsweise in 5 Minuten als pro Intervall gemessene Volumen). Als data.frame-Format mit Datum als erster Spalte (Datum als as.POSIXct-Typ) und Regenhoehe als zweiter Spalte (RH).Fehlende Werte sollten als NA angegeben werden!
-#' @param Dauern Dauern, die fuer die Berechnung der jaehrlichen Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15,30,60,120,360,720,1440, 2880, 4320 und 10080min.
+#' @param Dauern Dauern, die fuer die Berechnung der jaehrlichen Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15, 30, 60, 120, 360, 720, 1440, 2880, 4320 und 10080min.
 #' @param Intervall das Zeitintervall der Niederschlagsmessungen (entweder in Minuten oder Stunden).  Standardwert ist 5min.
 #' @param DSDmin Mindestdauer der Trockenperiode, die fuer die Unabhaengigkeit der Extremwerte erforderlich ist, angegeben in der gleichen Einheit wie das Intervall. Standardwert ist 240 min (4 Stunden).
 #' @param SerieTyp Typ der ausgegebenen jaehrlichen Serien entweder als Volumen in mm pro Dauer (VOL) oder Intensitaeten in mm/Stunde (INT). Standardwert ist INT.
 #' @param report falls gewuenscht, einen Ordnerpfad, in dem die Informationen ueber die jaehrlichen Extremwerte gespeichert werden sollen
 #' @details
-#' Funktion zur Ermittlung der jaehrlichen Serie (auf der Grundlage des Kalenderjahres) aus einer Regenzeitreihe und vorgegebenen Dauern.
-#' 1. Alle fehlenden Werte werden als Null zugewiesen.
-#' 2. Eine Mindestdauer der Trockenperiode wird verwendet, um unabhaengige Regenereignisse innerhalb eines Jahres zu identifizieren. Ist die Dauer laenger als die Trockenheitsdauer, wird die Dauer selbst fuer die Trennung unabhaengiger Regenereignisse verwendet.
-#' 3. Innerhalb jedes unabhaengigen Regenereignisses in einem Jahr wird ein gleitendes Fenster mit der Dauer verwendet, um das maximale Volumen / Intensitaet zu finden.
-#' 4. Das maximale Volumen / Intensitaet fuer jedes Jahr wird zurueckgegeben.
+#' Funktion zur Ermittlung der jaehrlichen Serie (auf der Grundlage des Kalenderjahres) aus einer Regenzeitreihe und vorgegebenen Dauern. Eine Mindestdauer der Trockenperiode wird verwendet, um unabhaengige Regenereignisse am Anfange/Ende eines Jahres zu identifizieren. Das maximale Volumen / Intensitaet fuer jedes Jahr wird zurueckgegeben.
 #'
 #' Fuer weitere Hinweise siehe Kapitel 5.2 des Merkblattes DWA-A 531.
 #'
 #' @return
-#' Jaehrliche Maximum Serie (als Regenhoehe in mm/Dauer oder Regenintensitaet in mm/h) als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen.
+#' Jaehrliche Maximum Serie (als Regenhoehe in mm/Dauer oder Regenintensitaet in mm/h) als data.frame, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen.
 #' @examples
 #' # Anwendung Beispiel
 #' head(Regendaten_01684)

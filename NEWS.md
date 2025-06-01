@@ -35,9 +35,11 @@
 			 7. Kostra_hN_Schaetzung.R und Kostra202_Parameter.R (vorgeschlagen am 23.05.2025 von Bora Shehu)
 			Die Funktionen aus dem Paket rdwd zum Lesen der Kostra asc-Dateien wurden ersetzt. Das Paket rdwd wird nicht mehr verwendet.
 
+			 8. Die Funktionsbeschreibung, das Handbuch und die Einleitung wurden aufgrund der Kommentare des DWD aktualisiert (01.06.2025)
+
 # Nextreme 1.2.0	 
 07.10.2024 - implementiert von Bora Shehu
-			 1. kw_koupar1.R und kw_koupar2.R (vorgeschlagen am 07.10.2024 von Jennifer Oestermoeller)
+			 1. kw_koupar1.R und kw_koupar2.R (vorgeschlagen am 07.10.2024 von Jennifer Ostermoeller)
 			 Die Berechnung des Rangs fuer die Schaetzung des Koustoyiannis-Parameters wurde geaendert:
 			 mittlere.Rang  = mean(unlist(sapply(Inten.jeDauer, function(k) mean(which(alle.sortiert==k)))))
 			 

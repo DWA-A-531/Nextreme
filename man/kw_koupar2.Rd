@@ -21,9 +21,9 @@ kw_koupar2(
 
 \item{Dauern}{Dauern (h), die fuer die Berechnung der jaehrlichen Serien verwendet sind, in Stunden!}
 
-\item{Inten.Daten}{der extrahierten jaehrlichen Serien, nicht als maximale Niederschlagsvolume, sondern als maximale Niederschlagsintensitaet in mm/h, angegeben fuer jede Dauer (D) und jedes Jahr.// Format data.frame(ncol = Dauer, nrow=Jahre)}
+\item{Inten.Daten}{der extrahierten jaehrlichen Serien, nicht als maximale Niederschlagsvolume, sondern als maximale Niederschlagsintensitaet in mm/h, angegeben fuer jede Dauer (D) und jedes Jahr. Format ist data.frame(ncol = Dauer, nrow=Jahre)}
 
-\item{Partition}{die Anzahl der Extremwerte pro Dauer, die in die Berechnung der Gesamtintensitaet einbezogen werden sollen (1/3 oder 1/2 aller Daten)}
+\item{Partition}{die Anzahl der Extremwerte pro Dauer, die in die Berechnung der Gesamtintensitaet einbezogen werden sollen.}
 
 \item{nD}{Anzahl der Jahre oder Anzahl der Extremewerte fuer jede Dauer}
 
@@ -43,7 +43,7 @@ wo:
   \item \eqn{m} Hoechster Rang fuer die Intensitaeten: Anzahl aller Beobachtungen fuer die gesamten Dauern
   \item \eqn{k} Anzahl aller Dauern, die fuer die Berechnung der jaehrlichen Serien verwendet sind
   \item \eqn{n_D} Anzahl der Jahre oder Anzahl der Extremewerte fuer jede Dauer \eqn{D} .
-  \item \eqn{\bar{R}_D} Mittlerer Rang fuer die Stichprobe jede Dauer \eqn{D}
+  \item \eqn{\bar{r}_D} Mittlerer Rang fuer die Stichprobe jede Dauer \eqn{D}
 }
 \deqn{KW\left( \theta,\eta \right) \rightarrow Min}
 wo:

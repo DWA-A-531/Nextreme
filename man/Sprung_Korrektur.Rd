@@ -4,12 +4,12 @@
 \alias{Sprung_Korrektur}
 \title{Spruengkorrektur bei kleinen Dauerstufen (D<= 30min)}
 \usage{
-Sprung_Korrektur(Serie, Sensorwechsel)
+Sprung_Korrektur(Serie, wechselDatum)
 }
 \arguments{
 \item{Serie}{Jaehrliche Reihen als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen (in Minuten!).}
 
-\item{Sensorwechsel}{Der Zeitpunkt, zu dem der Sensor von einem analogen auf einen digitalen Sensor umgestellt wurde. Angegeben als as.POSIXct-Format.}
+\item{wechselDatum}{Der Zeitpunkt, zu dem der Sensor von einem analogen auf einen digitalen Sensor umgestellt wurde. Angegeben als as.POSIXct-Format.}
 }
 \value{
 Die korrigierte jaehrlichen Serien als data.frame wird zurueckgegeben (das gleiche Format wie die Eingabe).
@@ -26,6 +26,6 @@ Wenn es einen Sprung gibt - Typ Instationaritaet auf der jaehrlichen Serie von k
 }
 \examples{
 wechselDatum = as.Date("1992-12-31", format=c("\%Y-\%m-\%d"))
-korrigierte_hN = Sprung_Korrektur(Goerlitz_hN, wechselDatum)
-print(korrigierte_hN)
+korrigierte_maxSerie = Sprung_Korrektur(Goerlitz_maxSerie, wechselDatum)
+print(korrigierte_maxSerie)
 }

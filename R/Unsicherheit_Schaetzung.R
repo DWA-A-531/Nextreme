@@ -1,15 +1,15 @@
 #' Schaetzung der Stichprobenunsicherheit durch Bootstrapping.
 #' @description
-#' Die Stichprobenunsicherheit der extremen Niederschlagsparameter und der erforderlichen Quantils wird auf der Grundlage des Bootstrapping-Algorithmus berechnet, wie in Kapitel 6.3 des DWA-A 531 Merkblattes beschrieben.
+#' Die Stichprobenunsicherheit der extremen Niederschlagsparameter und der erforderlichen Quantile wird auf der Grundlage des Bootstrapping-Algorithmus berechnet, wie in Kapitel 6.3 des DWA-A 531 Merkblattes beschrieben.
 #' 1. die Jahre der jaehrlichen Maximum Serien (als Regenintensitaet in mm/h) werden nBoots mal mit Ersetzung neu gesampelt. Die neu gesampelten Jahre werden fuer jede Dauer selektiert und bilden so nBoots neue jaehrliche Serien.
 #' 2. fuer jede aehrlichen Maximum Serien (als Regenintensitaet in mm/h) werden die Parameter berechnet. Die Konfidenzgrenzen fuer jeden Parameter werden aus nBoots berechnet.
 #' 3. fuer jeden Parametersatz wird die Regenhoehe/-intensitaet fuer die gewuenschten Dauern und Wiederkehrintervalle berechnet, wobei die Konfidenzgrenzen fuer jeden Wert aus nBoots errechnet werden.
 #' @param Serie Jaehrliche Maximum Serien (als Regenintensitaet in mm/h) werden als Tabelle (data.frame Format), wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen.
 #' @param Tn die Wiederkehrintervalle, fuer die die Regenhoehe/Intensitaet berechnet werden sollen. Die Wiederkehrintervalle sollten in Jahren angegeben werden!
-#' @param Dauern Dauern, die fuer die Berechnung der Jaehrliche Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15,30,60,120,360,720,1440, 2880, 4320 und 10080min.
-#' @param methGEV  den Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Serien angepasst werden soll. Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Form-Parameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Form-Parameter ist gleich Null – Gumbel Verteilung)
+#' @param Dauern Dauern, die fuer die Berechnung der Jaehrliche Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15, 30, 60, 120, 360, 720, 1440, 2880, 4320 und 10080min.
+#' @param methGEV  den Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Serien angepasst werden soll. Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Formparameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Formparameter ist gleich Null – Gumbel Verteilung)
 #' @param formTyp kontrolliert, wie der Formparameter der Generalized Extreme Value Distribution (nur bei methGEV=„GEV“) geschaetzt werden soll. Die Option „CON“ berechnet die Formparameter auf der Basis der L-Momente, und die Option „FIX“ erzwingt einen bestimmten Wert fuer den Formparameter (zum Beispiel -0,1).
-#' @param Gamma den vorbestimmten Wert des GEV-Form-Parameters angeben. Nur wichtig fuer die Variante von methGEV=„GEV“ und formTyp=„FIX“.
+#' @param Gamma den vorbestimmten Wert des GEV-Formparameters angeben. Nur wichtig fuer die Variante von methGEV=„GEV“ und formTyp=„FIX“.
 #' @param nBoots die Anzahl der zufaelligen Realisierungen, die aus den jaehrlichen Serien zu ziehen sind.
 #' @param rSeed Random Seed fuer das Bootstrapping und die Realisationen, um die gleiche Ausgabe fuer jede gleiche Eingabe zu garantieren.
 #' @param SerieTyp Kontrolle ueber die Einheiten der Ausgabetabelle. Die Optionen sind: "VOL" fuer Regenhoehe in mm/Dauer, und "INT" fuer Regenintensitaet in mm/h.
@@ -17,13 +17,13 @@
 #' @details
 #' Die Unsicherheit wird auf der Basis der Breite der Konfidenzgrenzen geschaetzt, die aus nBoots-Realisierungen fuer einen bestimmten Wert (entweder Parameter oder Quantil) erhalten sind.
 #' Die folgende Formel kann verwendet werden:
-#' @return Ein List  der die erhaltenen nBoots-Realisierungen fuer die Quantils (erster Eintrag ~  QUA_INFO) und fuer die Parameter (zweiter Eintrag ~ PAR_INFO) enthaelt.
+#' @return Eine Liste, die die erhaltenen nBoots-Realisierungen fuer die Quantile (erster Eintrag ~  QUA_INFO) und fuer die Parameter (zweiter Eintrag ~ PAR_INFO) enthaelt.
 #' @examples
 #' # Beispiel 1
 #' # Berechnung der Stichprobenunsicherheit durch 50 Realisierungen
 #' # fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020:
-#' Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=100, nBoots =50, rSeed=15, SerieTyp="VOL" )
-#' # aus der Unsicherheit nur die Quantils Information extrahieren
+#' Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_maxIntSerie,Tn=100, nBoots =50, rSeed=15, SerieTyp="VOL" )
+#' # aus der Unsicherheit nur die Quantile Information extrahieren
 #' HN_KI  = Unsicherheit$QUA_INFO
 #' dauern = c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080)
 #' # das geschaetzte Konfidenzintervall fuer Tn=100 und die gegebenen Dauern darstellen:
@@ -46,7 +46,7 @@
 #' # Berechnung der Stichprobenunsicherheit durch 100 Realisierungen
 #' # fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020.
 #' # Wiederkehrintervalle von 20, 50 und 100 Jahren betrachten.
-#' Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=c(20,50,100),
+#' Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_maxIntSerie,Tn=c(20,50,100),
 #'  nBoots =100, rSeed=15, SerieTyp="VOL")
 #' # aus der Unsicherheit nur die Parameterformation extrahieren
 #' PAR_KI  = Unsicherheit$PAR_INFO

@@ -9,7 +9,7 @@ Intervallkorrektur(Serie, Intervall = 5)
 \arguments{
 \item{Serie}{Jaehrliche Maximum Serie als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen.}
 
-\item{Intervall}{das Zeitintervall der Niederschlagsmessungen (entweder in Minuten oder Stunden).  Standardwert ist 5min. Soll in den gleichen Einheiten wie die Regendauern in der data.frame Serie}
+\item{Intervall}{das Zeitintervall der Niederschlagsmessungen (entweder in Minuten oder Stunden).  Standardwert ist 5min. Soll in den gleichen Einheiten wie die Regendauern in der angegebenen Serie.}
 }
 \value{
 Die Regenhoehe von Regendauern, die kuerzer oder gleich dem 4-maliger Intervalllaenge der Regendaten sind, werden mit den Korrekturfaktoren nach Tabelle 1 in DWA-A-531 multipliziert.
@@ -19,6 +19,6 @@ Korrektur der Regenhoehen fuer Dauern bis zum 4-mal die Intervalllaenge. Fuer we
 }
 \examples{
 #Korrektur der Goerlitzer jaehrlichen Serie bezueglich der Intervalllaenge:
-korrigierteSerie = Intervallkorrektur(Serie=Goerlitz_iN)
+korrigierteSerie = Intervallkorrektur(Serie=Goerlitz_maxIntSerie)
 print(korrigierteSerie)
 }

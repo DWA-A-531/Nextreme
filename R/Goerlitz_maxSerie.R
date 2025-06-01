@@ -1,10 +1,9 @@
-#' Goerlitz_hN: Jaehrliche maximale Regenhoehe
+#' Data Goerlitz_maxSerie: Jaehrliche maximale Regenhoehe
 #'
-#' Das Beispiel der jaehrlichen maximalen Regenintensitaet fuer die Station Goerlitz
-#' Regenhoehein mm/Dauer
-#' Fuer Dauern: 5, 10, 15, 30, 60, 120, 360, 720, 1440, 2880, 4320 und 10080 Minutes
-#' Fuer die Jahre von 1991 bis 2020
-#' Keine fehlenden Werte
+#' Das Beispiel der jaehrlichen maximalen Regenhoehe fuer die Station Goerlitz.
+#' Regenhoehe ist mm/Dauer gegeben
+#' fuer Dauern: 5, 10, 15, 30, 60, 120, 360, 720, 1440, 2880, 4320 und 10080 Minuten.
+#' Beobachtungen sind fuer die Jahre von 1991 bis 2020.
 #' @format A data frame with 30 rows and 12 variables:
 #' \describe{
 #'   \item{5}{jaehrliche maximale Regenhoehe fuer 5 Minuten Dauer}
@@ -21,6 +20,6 @@
 #'   \item{10080}{jaehrliche maximale Regenhoehe fuer 10080 Minuten Dauer}
 #' }
 #' @examples
-#' head(Goerlitz_hN)
-#' tail(Goerlitz_hN)
-"Goerlitz_hN"
+#' head(Goerlitz_maxSerie)
+#' tail(Goerlitz_maxSerie)
+"Goerlitz_maxSerie"

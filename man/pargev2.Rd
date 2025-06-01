@@ -2,7 +2,7 @@
 % Please edit documentation in R/pargev2.R
 \name{pargev2}
 \alias{pargev2}
-\title{Berechnung der GEV-Parameter mit einer festen Form (Kappa) Parameter}
+\title{Berechnung der GEV-Parameter mit einer festen Formparameter}
 \usage{
 pargev2(lmom, checklmom = TRUE, kappa = NULL)
 }
@@ -11,19 +11,19 @@ pargev2(lmom, checklmom = TRUE, kappa = NULL)
 
 \item{checklmom}{logische Variable, die entweder TRUE oder FALSE sein kann. Gibt an, ob die L-Momente geprueft werden sollen oder nicht.}
 
-\item{kappa}{der feste Wert des Kappa-Parameters (Formparameter). Wenn kappa=NULL ist, wird der Formparameter aus den L-Momenten berechnet.}
+\item{kappa}{der feste Wert des Formparameters. Wenn kappa=NULL ist, wird der Formparameter aus den L-Momenten berechnet.}
 }
 \value{
 Die GEV-Parameter
 }
 \description{
-Berechnung der GEV-Parameter mit einer festen Form (Kappa) Parameter
+Berechnung der GEV-Parameter mit einer festen Formparameter
 }
 \details{
-R-Funktion zur Berechnung der GEV-Parameter, wenn der Formparameter (kappa) auf einen bestimmten Wert eingestellt ist.
+R-Funktion zur Berechnung der GEV-Parameter, wenn der Formparameter auf einen bestimmten Wert eingestellt ist.
 }
 \examples{
 ShapeFix = 0.1 #(nach Koutsoyiannis 2008)
-kappaFix = ShapeFix * -1 # vorzeichenwechsel aufgrund unterschiedl. Formeln beachten!
-pargev2(lmomco::lmoms(1:10),kappa= kappaFix )$para
+Formparameter = ShapeFix * -1 # vorzeichenwechsel aufgrund unterschiedl. Formeln beachten!
+pargev2(lmomco::lmoms(1:10),kappa= Formparameter )$para
 }

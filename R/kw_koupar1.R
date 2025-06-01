@@ -1,11 +1,11 @@
 #' Optimierung des 1. Koutsoyiannis-Parameters
 #' @description
 #' Optimierung des 1. Koutsoyiannis-Parameters zur Skalierung der Intensitaeten je nach Dauer entsprechend der robusten Methode (basierend auf der Kruskal-Wallis-Statistik) wie in Koutsoyiannis et al. 1998
-#' @param Inten.Daten der extrahierten jaehrlichen Serien, nicht als maximale Niederschlagsvolume, sondern als maximale Niederschlagsintensitaet in mm/h, angegeben fuer jede Dauer (D) und jedes Jahr.// Format data.frame(ncol = Dauer, nrow=Jahre)
+#' @param Inten.Daten der extrahierten jaehrlichen Serien, nicht als maximale Niederschlagsvolume, sondern als maximale Niederschlagsintensitaet in mm/h, angegeben fuer jede Dauer (D) und jedes Jahr. Format ist data.frame(ncol = Dauer, nrow=Jahre)
 #' @param Theta Der erste Koutsoyiannis-Parameter
 #' @param Dauern Dauern (h), die fuer die Berechnung der jaehrlichen Serien verwendet sind, in Stunden!
 #' @param nD Anzahl der Jahre oder Anzahl der Extremewerte fuer jede Dauer
-#' @param Partition die Anzahl der Extremwerte pro Dauer, die in die Berechnung der Gesamtintensitaet einbezogen werden sollen (1/3 oder 1/2 aller Daten)
+#' @param Partition die Anzahl der Extremwerte pro Dauer, die in die Berechnung der Gesamtintensitaet einbezogen werden sollen.
 #' @param m Hoechster Rang fuer die Intensitaeten
 #' @details
 #' Die Optimierung der Koutsoyiannis-Parameter durch Minimierung der Kruskal-Wallis-Statistik (KW):
@@ -15,7 +15,7 @@
 #'   \item \eqn{m} Hoechster Rang fuer die Intensitaeten: Anzahl aller Beobachtungen fuer die gesamten Dauern
 #'   \item \eqn{k} Anzahl aller Dauern, die fuer die Berechnung der jaehrlichen Serien verwendet sind
 #'   \item \eqn{n_D} Anzahl der Jahre oder Anzahl der Extremewerte fuer jede Dauer \eqn{D} .
-#'   \item \eqn{\bar{R}_D} Mittlerer Rang fuer die Stichprobe jede Dauer \eqn{D}
+#'   \item \eqn{\bar{r}_D} Mittlerer Rang fuer die Stichprobe jede Dauer \eqn{D}
 #' }
 #' \deqn{KW\left( \theta,\eta \right) \rightarrow Min}
 #' wo:

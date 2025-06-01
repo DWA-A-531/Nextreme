@@ -12,10 +12,10 @@ Kostra2020_Parameter(Standorte, Temp_Pfad = "./")
 \item{Temp_Pfad}{Ein Ordner-Pfad, in den die KOSTRA-Daten heruntergeladen werden koennen.}
 }
 \value{
-Es wird eine Tabelle im Datenframe-Format mit den Koordinaten und den entsprechenden geschaetzten Kostra2020-Parametern (in jeder Spalte angegeben) fuer die angegebenen Standorte (in jeder Reihe angegeben) zurueckgegeben. Fuer Standorte, die ausserhalb der KOSTRA-DWD-2020 Bereiche liegen, werden NA-Werte zurueckgegeben.
+Es wird eine Tabelle im Datenframe-Format mit den Koordinaten und den entsprechenden geschaetzten Kostra-DWD-2020 Parametern (in jeder Spalte angegeben) fuer die angegebenen Standorte (in jeder Reihe angegeben) zurueckgegeben. Fuer Standorte, die ausserhalb der KOSTRA-DWD-2020 Bereiche liegen, werden NA-Werte zurueckgegeben.
 }
 \description{
-Die geschaetzten Parameter von KOSTRA-DWD-2020 werden aus dem DWD-Klimadatenzentrum fuer bestimmte Standorte ausgelesen. Als Eingabe werden die Koordinaten der Standorte benoetigt.
+Die geschaetzten Parameter von KOSTRA-DWD-2020 werden aus dem DWD-Climate Data Center fuer bestimmte Standorte ausgelesen. Als Eingabe werden die Koordinaten der Standorte benoetigt.
 }
 \details{
 R-Funktion, die die von KOSTRA-DWD-2020 geschaetzten Parameter in eine bestimmte oder temporaere Datei (Folder) herunterlaedt und die entsprechenden Parameterwerte (Theta - Koutsoyiannis erster Parameter, Eta - Koutsoyiannis zweiter Parameter, Mu - GEV Lokationsparameter, Sigma - GEV Skalenparameter und Gamma - GEV Formparameter) fuer die gewuenschten Positionen liest und zurueckgibt.

@@ -27,24 +27,24 @@ Trend_vs_Sprung(
 \item{skaliereZeit}{logical, TRUE, wenn der Zeitvektor in der Form (Zeit - min(Zeit))/length(Zeit)-0.5 in den Wertebereich zwischen -0.5 und 0.5 transformiert werden soll. Der berechnete Trend-Parameter bezieht sich dann auf die transformierte Zeit. Fuer den Optimierungsalgorithmus ist es in der Regel einfacher, das globale Optimum zu finden, wenn die Eingangsdaten des Zeitvektors einen kleinen Werteraum umspannen.}
 }
 \value{
-AicRes character, "Stat|Trend|Sprung|TrendSprung", Ergebnis auf der Grundlage des AIC-Kriteriums
+AicRes character, "Stat|Trend|Sprung", Ergebnis auf der Grundlage des AIC-Kriteriums
 
-BicRes character, "Stat|Trend|Sprung|TrendSprung", Ergebnis auf der Grundlage des BIC-Kriteriums
+BicRes character, "Stat|Trend|Sprung", Ergebnis auf der Grundlage des BIC-Kriteriums
 
-Aic.<Modell> numeric vector, AIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung|TrendSprung
+Aic.<Modell> numeric vector, AIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung
 
-Bic.<Modell> numeric vector, BIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung|TrendSprung
+Bic.<Modell> numeric vector, BIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung
 
-AnovaRes character, "Stat|Trend|Sprung|TrendSprung", Ergebnis auf Grundlage des Devianztests
+AnovaRes character, "Stat|Trend|Sprung", Ergebnis auf Grundlage des Devianztests
 
-Anova.<Modell> numeric vector, pValues fuer Uebergang von Nullmodell Stat zu einem der drei anderen Modelle Trend|Sprung|TrendSprung
+Anova.<Modell> numeric vector, pValues fuer Uebergang von Nullmodell Stat zu einem der drei anderen Modelle Trend|Sprung
 }
 \description{
 TrendVsSprung
 }
 \details{
 Die Generalisierte Extremwertverteilung GEV wird mittels der Maximum Likelihood Methode an die Serienwerte angepasst, wobei bezogen auf den Lokationsparameter
-die vier Modellformen "Stat" (d.h. stationaer), "Trend", "Sprung" oder "TrendSprung" (d.h. Trend und Sprung) angepasst werden. Fuer alle vier Modelle werden die
+die vier Modellformen "Stat" (d.h. stationaer), "Trend" oder "Sprung" angepasst werden. Fuer alle vier Modelle werden die
 Informationskriterien AIC und BIC ermittelt und anhand des minimalen IC-Wertes wird ausgewertet, welches der vier Modelle die Daten am besten beschreibt.
 Optional kann zusaetzlich auch ein partieller Devianztest (ifAnova=TRUE) durchgefuehrt werden, wobei dieser das Nullmodell moeglicherweise zu haeufig zugunsten des kompexeren verwirft.
 }
@@ -58,12 +58,9 @@ xStat   = rgev(n,10,2,0.1)
 xTrend  = rgev(n,10,2,0.1) + 1:n*0.05
 # synthetische GEV-verteilte Daten, mit Sprung:
 xSprung = c(rgev(n/2,10,1,0.1),rgev(n/2,20,2,0.1))
-# synthetische GEV-verteilte Daten, mit Trend und Sprung:
-xTrendSprung = c(rgev(n/2,10,2,0.1),rgev(n/2,20,2,0.1)) + (1:n)*0.05
 Sensor = factor(c(rep("analog",n/2),rep("digital",n/2)))
-X = data.frame(Jahr=1:n,Sensor=Sensor,xStat,xTrend,xSprung,xTrendSprung)
+X = data.frame(Jahr=1:n,Sensor=Sensor,xStat,xTrend,xSprung)
 Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xStat"],Sensor=X[,"Sensor"])
 Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xTrend"],Sensor=X[,"Sensor"])
 Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xSprung"],Sensor=X[,"Sensor"])
-Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xTrendSprung"],Sensor=X[,"Sensor"])
 }

@@ -37,9 +37,17 @@ Zunaechst ist es erforderlich, [R](https://www.r-project.org) auf dem Rechner zu
 
 Nach der Installation der beiden Programme ein neues R-Skript oeffnen (File \> New File \> R Script). In diesem Dokument (praktisch eine Textdatei) wird nun nach und nach Programmiercode hinzugefuegt, um die Ergebnisse der lokalen Extremwertanalyse, die fuer die Station Goerlitz durchgefuehrt wurde, zu analysieren und grafisch darzustellen. Die angegebenen Codebeispiele koennen in das geoeffnete R-Skript eingefuegt und gespeichert werden.
 
-Als naechstes ist es erforderlich, dass fuer das Arbeitsblatt DWA-A 531 entwickelte R-Paket „Nextreme“ zu installieren und einzubinden.
+Als erstes sollten Sie sicherstellen, dass alle von Nextreme verwendeten Pakete in Ihrem Rstudio / R installiert sind:
 
-**Es ist wichtig zu beachten, dass Nextreme nur auf Windows- und Mac-Betriebssystemen installiert werden kann. Linux wird noch nicht unterstuetzt.**
+```{r, eval=F}
+install.packages("lmomco")
+install.packages("lubridate")
+install.packages("terra")
+install.packages("evd")
+install.packages("scales")
+```
+
+Als naechstes ist es erforderlich, dass fuer das Arbeitsblatt DWA-A 531 entwickelte R-Paket „Nextreme“ zu installieren und einzubinden.
 
 a)  Das Paket kann aus der bereitgestellten Archiv-Datei (Nextreme.zip) mit folgenden Schritten installiert werden: Tools \> Install Packages \> Install from: Package Archieve File (.zip; .tar.gz) \> Browse to the package location \> Install.
 
@@ -93,23 +101,23 @@ Fuer die 5-Minuten-Niederschlagsreihen in Goerlitz werden fuer jede Dauer jaehrl
 Ziel ist die Berechnung der maximalen jaehrlichen Maxima-Serien, die bei bestimmten Dauern (hier 5, 10, 15, 30, 60, 120, 360, 720, 1440, 2880, 4320, 10080 Minuten) beobachtet wurden. Zu diesem Zweck kann die Funktion *jaehrliche_maxSerie()* verwendet werden. Hier wird eine Dauer (*DSDmin*) von 4 Stunden verwendet, um unabhaengige Regenereignisse zu trennen, und da die Regendaten in 5-Minuten-Zeitschritten gegeben sind, wird das Intervallargument (*Intervall*) auf 5 gesetzt. Um die Parameter der Extremwertverteilung zu ermitteln, sind die maximalen jaehrlichen Regensintensitaeten fuer jede Dauer erforderlich. Aus diesem Grund geben wir *SerieTyp=„INT“* an, um die maximalen Intensitaeten als Ausgabe zu erhalten.
 
 ```{r}
-Goerlitz_maxSerie = jaehrliche_maxSerie(Regendaten_01684, 
+Goerlitz_maxIntSerie = jaehrliche_maxSerie(Regendaten_01684, 
                                         Dauern = c(5, 10,15,30,60,120,360,720,
                                                    1440, 2880,4320, 10080), 
                                         DSDmin=240, Intervall = 5,
                                         SerieTyp = "INT")
-print(head(Goerlitz_maxSerie,10))
+print(head(Goerlitz_maxIntSerie,10))
 ```
 
-Die Variable *Goerlitz_maxSerie* ist eine Tabelle mit der maximalen Intensitaet (mm/h), die bei verschiedenen Dauern (in Spalten) und Jahren (in Zeilen) ermittelt wurde.
+Die Variable *Goerlitz_maxIntSerie* ist eine Tabelle mit der maximalen Intensitaet (mm/h), die bei verschiedenen Dauern (in Spalten) und Jahren (in Zeilen) ermittelt wurde.
 
 ### 2.2 Beruecksichtigung der Intervalllaenge
 
 Da die Niederschlagsreihe in 5-Minuten-Bloecken verfuegbar ist, werden die jaehrliche Maxima-Serien fuer die Dauern von 5, 10, 15 und 20 Minuten korrigiert (Intervallkorrektur, siehe Tabelle 1 in DWA-A 531). Zu diesem Zweck kann die Funktion *Intervallkorrektur()* verwendet werden. Da die Regendaten in 5-Minuten-Zeitschritten gegeben sind, wird das Intervallargument (*Intervall*) auf 5 gesetzt und damit Dauerstufen bis 20 min bei der Korrektur beruecksichtigt.
 
 ```{r}
-Goerlitz_maxSerie    = Intervallkorrektur(Goerlitz_maxSerie, Intervall = 5)
-print(head(Goerlitz_maxSerie,10))
+Goerlitz_maxIntSerie    = Intervallkorrektur(Goerlitz_maxIntSerie, Intervall = 5)
+print(head(Goerlitz_maxIntSerie,10))
 ```
 
 ### 2.3 Stationaritaet und Sprungkorrektur bei kleinen Dauerstufen
@@ -118,14 +126,14 @@ Da der Sensortyp an der Station Goerlitz sich ueber die Zeit aendert, wird ueber
 
 **HINWEIS:** Dieser Schritt wird hier nur durchgefuehrt, um ein Beispiel fuer eine solche Anwendung zu zeigen. Laut Arbeitsblatt DWA-A 531 sollte eine Sprungkorrektur getestet werden, wenn ein Sensor vom analogen (Regenschreiber) zum digitalen Typ gewechselt wurde. An der Station Goerlitz sind in diesem Beispiel alle Sensoren digital, so dass eine Sprungpruefung und -korrektur eigentlich nicht erforderlich waere. Hier wird dieser Schritt nur gezeigt, um einen vollstaendigen Arbeitsablauf darzulegen!
 
-Zu diesem Zweck kann die Funktion *Sprung_Korrektur()* verwendet werden. Zusaetzlich zur Eingabe der jaehrlichen Serie (*Goerlitz_maxSerie*) benoetigt die Funktion das Datum des Sensorwechsels in einer Variablen vom Typ *Date()*.
+Zu diesem Zweck kann die Funktion *Sprung_Korrektur()* verwendet werden. Zusaetzlich zur Eingabe der jaehrlichen Serie (*Goerlitz_maxIntSerie*) benoetigt die Funktion das Datum des Sensorwechsels in einer Variablen vom Typ *Date()*.
 
 ```{r}
 WechselDatum = as.Date("1991-01-01", format=c("%Y-%m-%d"))
-Goerlitz_maxSerie_korrigiert    = Sprung_Korrektur(Goerlitz_maxSerie,
+Goerlitz_maxSerie_korrigiert    = Sprung_Korrektur(Goerlitz_maxIntSerie,
                                                    WechselDatum)
 # Die Differenz vor und nach der Funktion sprungKorrektur() ueberpruefen.
-print(head(round(Goerlitz_maxSerie_korrigiert-Goerlitz_maxSerie,0),10))
+print(head(round(Goerlitz_maxSerie_korrigiert-Goerlitz_maxIntSerie,0),10))
 ```
 
 Wie bereits erwaehnt, gibt es in diesem Beispiel keine Spruenge in den Daten, und daher ist die von der Funktion *Sprung_Korrektur()* zurueckgegebene Tabelle dieselbe wie die Eingabe.
@@ -143,7 +151,7 @@ Zu diesem Zweck kann die Funktion *Parameter_Schaetzung()* verwendet werden, um 
 **HINWEIS:** Die Funktion *Parameter_Schaetzung()* kann entweder eine GEV oder eine Gumbel-Verteilung (Formparameter = 0.0) anpassen Fuer die Gumbel-Verteilung (*methGEV=“GUM”*) bleiben *formTyp* und *Gamma* unberuecksichtigt; fuer die GEV kann der Formparameter hingegen auch frei aus L-Momenten geschaetzt werden (mit *formTyp=“CON”*, in diesem Fall wird *Gamma* nicht beruecksichtigt). In allen Faellen werden die maximalen Intensitaeten ueber die gegebene Dauer normalisiert. Die Funktion *Parameter_Schaetzung()* kann nicht GEV-Verteilungen individuell an jede Dauer anpassen!
 
 ```{r}
-N_pars      = Parameter_Schaetzung(Goerlitz_maxSerie, 
+N_pars      = Parameter_Schaetzung(Goerlitz_maxIntSerie, 
                                    Dauern = c(5, 10, 15,30,60,120,360,720,1440, 
                                               2880,4320, 10080), 
                                    methGEV="GEV", formTyp = "FIX", Gamma = -0.1,
@@ -179,7 +187,7 @@ Zu diesem Zweck kann die Funktion *Unsicherheit_Schaetzung()* implementiert werd
 **Dies kann mehrere Minuten dauern!**
 
 ```{r}
-KI          = Unsicherheit_Schaetzung(Goerlitz_maxSerie,
+KI          = Unsicherheit_Schaetzung(Goerlitz_maxIntSerie,
                                   Tn =c(2,5,10,20,50,100),
                                   Dauern = c(5, 10, 15,30,60,120,360,720,1440,
                                              2880, 4320, 10080),

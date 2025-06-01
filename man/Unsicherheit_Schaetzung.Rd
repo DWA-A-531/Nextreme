@@ -22,13 +22,13 @@ Unsicherheit_Schaetzung(
 
 \item{Tn}{die Wiederkehrintervalle, fuer die die Regenhoehe/Intensitaet berechnet werden sollen. Die Wiederkehrintervalle sollten in Jahren angegeben werden!}
 
-\item{Dauern}{Dauern, die fuer die Berechnung der Jaehrliche Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15,30,60,120,360,720,1440, 2880, 4320 und 10080min.}
+\item{Dauern}{Dauern, die fuer die Berechnung der Jaehrliche Maximum Serien verwendet sind. Die gleiche Einheit (entweder Minuten oder Stunden) wie das Intervall. Standartwerte sind: 5, 10, 15, 30, 60, 120, 360, 720, 1440, 2880, 4320 und 10080min.}
 
-\item{methGEV}{den Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Serien angepasst werden soll. Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Form-Parameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Form-Parameter ist gleich Null – Gumbel Verteilung)}
+\item{methGEV}{den Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Serien angepasst werden soll. Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Formparameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Formparameter ist gleich Null – Gumbel Verteilung)}
 
 \item{formTyp}{kontrolliert, wie der Formparameter der Generalized Extreme Value Distribution (nur bei methGEV=„GEV“) geschaetzt werden soll. Die Option „CON“ berechnet die Formparameter auf der Basis der L-Momente, und die Option „FIX“ erzwingt einen bestimmten Wert fuer den Formparameter (zum Beispiel -0,1).}
 
-\item{Gamma}{den vorbestimmten Wert des GEV-Form-Parameters angeben. Nur wichtig fuer die Variante von methGEV=„GEV“ und formTyp=„FIX“.}
+\item{Gamma}{den vorbestimmten Wert des GEV-Formparameters angeben. Nur wichtig fuer die Variante von methGEV=„GEV“ und formTyp=„FIX“.}
 
 \item{nBoots}{die Anzahl der zufaelligen Realisierungen, die aus den jaehrlichen Serien zu ziehen sind.}
 
@@ -39,10 +39,10 @@ Unsicherheit_Schaetzung(
 \item{Konfidenzgrenzen}{Perzentile der nBoots-Realisierungen, die die Funktion zurueckbringen soll. Das Format sollte Vektor sein, wobei der erste Wert fuer die untere Konfidenzgrenze und der zweite Wert fuer die obere Konfidenzgrenze steht.}
 }
 \value{
-Ein List  der die erhaltenen nBoots-Realisierungen fuer die Quantils (erster Eintrag ~  QUA_INFO) und fuer die Parameter (zweiter Eintrag ~ PAR_INFO) enthaelt.
+Eine Liste, die die erhaltenen nBoots-Realisierungen fuer die Quantile (erster Eintrag ~  QUA_INFO) und fuer die Parameter (zweiter Eintrag ~ PAR_INFO) enthaelt.
 }
 \description{
-Die Stichprobenunsicherheit der extremen Niederschlagsparameter und der erforderlichen Quantils wird auf der Grundlage des Bootstrapping-Algorithmus berechnet, wie in Kapitel 6.3 des DWA-A 531 Merkblattes beschrieben.
+Die Stichprobenunsicherheit der extremen Niederschlagsparameter und der erforderlichen Quantile wird auf der Grundlage des Bootstrapping-Algorithmus berechnet, wie in Kapitel 6.3 des DWA-A 531 Merkblattes beschrieben.
 1. die Jahre der jaehrlichen Maximum Serien (als Regenintensitaet in mm/h) werden nBoots mal mit Ersetzung neu gesampelt. Die neu gesampelten Jahre werden fuer jede Dauer selektiert und bilden so nBoots neue jaehrliche Serien.
 2. fuer jede aehrlichen Maximum Serien (als Regenintensitaet in mm/h) werden die Parameter berechnet. Die Konfidenzgrenzen fuer jeden Parameter werden aus nBoots berechnet.
 3. fuer jeden Parametersatz wird die Regenhoehe/-intensitaet fuer die gewuenschten Dauern und Wiederkehrintervalle berechnet, wobei die Konfidenzgrenzen fuer jeden Wert aus nBoots errechnet werden.
@@ -55,8 +55,8 @@ Die folgende Formel kann verwendet werden:
 # Beispiel 1
 # Berechnung der Stichprobenunsicherheit durch 50 Realisierungen
 # fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020:
-Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=100, nBoots =50, rSeed=15, SerieTyp="VOL" )
-# aus der Unsicherheit nur die Quantils Information extrahieren
+Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_maxIntSerie,Tn=100, nBoots =50, rSeed=15, SerieTyp="VOL" )
+# aus der Unsicherheit nur die Quantile Information extrahieren
 HN_KI  = Unsicherheit$QUA_INFO
 dauern = c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080)
 # das geschaetzte Konfidenzintervall fuer Tn=100 und die gegebenen Dauern darstellen:
@@ -79,7 +79,7 @@ barplot(unlist(HN_KI$rel.Unsicherheit["100",]),
 # Berechnung der Stichprobenunsicherheit durch 100 Realisierungen
 # fuer die jaehrlichen Serien in Goerlitz von 1991 bis 2020.
 # Wiederkehrintervalle von 20, 50 und 100 Jahren betrachten.
-Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_iN,Tn=c(20,50,100),
+Unsicherheit  = Unsicherheit_Schaetzung(Goerlitz_maxIntSerie,Tn=c(20,50,100),
  nBoots =100, rSeed=15, SerieTyp="VOL")
 # aus der Unsicherheit nur die Parameterformation extrahieren
 PAR_KI  = Unsicherheit$PAR_INFO

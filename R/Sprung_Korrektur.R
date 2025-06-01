@@ -6,16 +6,16 @@
 #' 1. Zuerst wird ein Instationaritaet Test fuer die Jahresreihen mit einer Dauer von 30 Minuten oder weniger durchgefuehrt.
 #' 2. Wenn die Instationaritaet vom Typ "Sprung" ist, dann wird eine Sprungkorrektur angewendet.
 #' @param Serie Jaehrliche Reihen als Tabelle, wo die Anzahl der Zeilen die Jahre mit verfuegbaren Daten und die Anzahl der Spalten die ausgewaehlten Dauern bezeichnen (in Minuten!).
-#' @param Sensorwechsel Der Zeitpunkt, zu dem der Sensor von einem analogen auf einen digitalen Sensor umgestellt wurde. Angegeben als as.POSIXct-Format.
+#' @param wechselDatum Der Zeitpunkt, zu dem der Sensor von einem analogen auf einen digitalen Sensor umgestellt wurde. Angegeben als as.POSIXct-Format.
 #' @details
 #' Wenn es einen Sprung gibt - Typ Instationaritaet auf der jaehrlichen Serie von kurzen Dauern, wird der Sprung eliminiert und eine korrigierte jaehrliche Serientabelle zurueckgegeben.
 #' @return
 #' Die korrigierte jaehrlichen Serien als data.frame wird zurueckgegeben (das gleiche Format wie die Eingabe).
 #' @examples
 #' wechselDatum = as.Date("1992-12-31", format=c("%Y-%m-%d"))
-#' korrigierte_hN = Sprung_Korrektur(Goerlitz_hN, wechselDatum)
-#' print(korrigierte_hN)
-Sprung_Korrektur  <- function(Serie, Sensorwechsel){
+#' korrigierte_maxSerie = Sprung_Korrektur(Goerlitz_maxSerie, wechselDatum)
+#' print(korrigierte_maxSerie)
+Sprung_Korrektur  <- function(Serie, wechselDatum){
   # ueberpruefung der Bedingungen, die erfuellt sein muessen, damit die Funktion ohne Probleme laufen kann
   # Bedingung 1: Das Input Serie sollte existieren, vom Typ data.frame sein und Jahre als Zeilennamen und Dauer als Spaltennamen haben. Es sollte mehr als 5 Jahre und mehr als 1 Dauer enthalten.
   if(missing(Serie)) stop("Das Serie Input ist nicht vorhanden! Bitte geben Sie einen data.frame() der jaehrlichen Intensitaetsserie an (in mm/h), wobei die Zeile die Jahre und Spalte die Dauer entsprechen.")
@@ -27,11 +27,11 @@ Sprung_Korrektur  <- function(Serie, Sensorwechsel){
   else if(length(which(as.numeric(colnames(Serie))<=30))<1) stop("Das Serie Input sollte mindestens eine Spalte mit einer Dauer kleiner oder gleich 30 Minuten enthalten! Die Funktion wird nur auf die Spalten angewendet, deren Namen kuerzer oder gleich 30 Minuten sind.")
   else if(length(which(as.numeric(rownames(Serie))>1800))<1) stop("Das Serie Input die Jahre als Zeilennamen enthalten. Achten Sie darauf, dass die Jahreszahlen vierstellig sind (z.B. groesser als 1800).")
 
-  # Bedingung 2: Das Input Sensorwechsel sollte nur ein Element vom Typ Date() und nicht Nullsein!
-  if(class(Sensorwechsel)!="Date") stop("Das Input Sensorwechsel sollte vom Date() Typ sein!")
-  else if(length(Sensorwechsel)!=1) stop("Das Input Sensorwechsel sollte nur 1 Element haben!")
+  # Bedingung 2: Das Input wechselDatum sollte nur ein Element vom Typ Date() und nicht Nullsein!
+  if(class(wechselDatum)!="Date") stop("Das Input wechselDatum sollte vom Date() Typ sein!")
+  else if(length(wechselDatum)!=1) stop("Das Input wechselDatum sollte nur 1 Element haben!")
 
-  Wechseljahr = lubridate::year(Sensorwechsel)
+  Wechseljahr = lubridate::year(wechselDatum)
   alleJahren  = as.numeric(rownames(Serie))
   Dauern  = as.numeric(colnames(Serie))
   suppressWarnings({

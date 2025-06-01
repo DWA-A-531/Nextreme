@@ -7,15 +7,15 @@
 #' @param skaliereZeit logical, TRUE, wenn der Zeitvektor in der Form (Zeit - min(Zeit))/length(Zeit)-0.5 in den Wertebereich zwischen -0.5 und 0.5 transformiert werden soll. Der berechnete Trend-Parameter bezieht sich dann auf die transformierte Zeit. Fuer den Optimierungsalgorithmus ist es in der Regel einfacher, das globale Optimum zu finden, wenn die Eingangsdaten des Zeitvektors einen kleinen Werteraum umspannen.
 #' @details
 #' Die Generalisierte Extremwertverteilung GEV wird mittels der Maximum Likelihood Methode an die Serienwerte angepasst, wobei bezogen auf den Lokationsparameter
-#' die vier Modellformen "Stat" (d.h. stationaer), "Trend", "Sprung" oder "TrendSprung" (d.h. Trend und Sprung) angepasst werden. Fuer alle vier Modelle werden die
+#' die vier Modellformen "Stat" (d.h. stationaer), "Trend" oder "Sprung" angepasst werden. Fuer alle vier Modelle werden die
 #' Informationskriterien AIC und BIC ermittelt und anhand des minimalen IC-Wertes wird ausgewertet, welches der vier Modelle die Daten am besten beschreibt.
 #' Optional kann zusaetzlich auch ein partieller Devianztest (ifAnova=TRUE) durchgefuehrt werden, wobei dieser das Nullmodell moeglicherweise zu haeufig zugunsten des kompexeren verwirft.
-#' @return AicRes character, "Stat|Trend|Sprung|TrendSprung", Ergebnis auf der Grundlage des AIC-Kriteriums
-#' @return BicRes character, "Stat|Trend|Sprung|TrendSprung", Ergebnis auf der Grundlage des BIC-Kriteriums
-#' @return Aic.<Modell> numeric vector, AIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung|TrendSprung
-#' @return Bic.<Modell> numeric vector, BIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung|TrendSprung
-#' @return AnovaRes character, "Stat|Trend|Sprung|TrendSprung", Ergebnis auf Grundlage des Devianztests
-#' @return Anova.<Modell> numeric vector, pValues fuer Uebergang von Nullmodell Stat zu einem der drei anderen Modelle Trend|Sprung|TrendSprung
+#' @return AicRes character, "Stat|Trend|Sprung", Ergebnis auf der Grundlage des AIC-Kriteriums
+#' @return BicRes character, "Stat|Trend|Sprung", Ergebnis auf der Grundlage des BIC-Kriteriums
+#' @return Aic.<Modell> numeric vector, AIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung
+#' @return Bic.<Modell> numeric vector, BIC-Wert fuer die einzelnen Modelle Stat|Trend|Sprung
+#' @return AnovaRes character, "Stat|Trend|Sprung", Ergebnis auf Grundlage des Devianztests
+#' @return Anova.<Modell> numeric vector, pValues fuer Uebergang von Nullmodell Stat zu einem der drei anderen Modelle Trend|Sprung
 #' @export
 #' @examples
 #' library(evd)
@@ -27,14 +27,11 @@
 #' xTrend  = rgev(n,10,2,0.1) + 1:n*0.05
 #' # synthetische GEV-verteilte Daten, mit Sprung:
 #' xSprung = c(rgev(n/2,10,1,0.1),rgev(n/2,20,2,0.1))
-#' # synthetische GEV-verteilte Daten, mit Trend und Sprung:
-#' xTrendSprung = c(rgev(n/2,10,2,0.1),rgev(n/2,20,2,0.1)) + (1:n)*0.05
 #' Sensor = factor(c(rep("analog",n/2),rep("digital",n/2)))
-#' X = data.frame(Jahr=1:n,Sensor=Sensor,xStat,xTrend,xSprung,xTrendSprung)
+#' X = data.frame(Jahr=1:n,Sensor=Sensor,xStat,xTrend,xSprung)
 #' Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xStat"],Sensor=X[,"Sensor"])
 #' Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xTrend"],Sensor=X[,"Sensor"])
 #' Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xSprung"],Sensor=X[,"Sensor"])
-#' Trend_vs_Sprung(Zeit=X[,"Jahr"],Serienwerte=X[,"xTrendSprung"],Sensor=X[,"Sensor"])
 Trend_vs_Sprung = function(Zeit,Serienwerte,Sensor=NULL,ifTS=F,ifAnova=F,skaliereZeit = T){
   Fgev=function(...){ res=list(mo="",Aic=as.numeric(NA),Bic=as.numeric(NA));  mo=try(evd::fgev(...,std.err=F),sil=T); if(!is.character(mo)){mo$Aic=stats::AIC(mo);mo$Bic=stats::AIC(mo,k=length(mo$est))};  mo }
   Anova=function(...){res=try(stats::anova(...)[2,5]);if(is.character(res))res=as.numeric(NA);res}
@@ -57,8 +54,13 @@ Trend_vs_Sprung = function(Zeit,Serienwerte,Sensor=NULL,ifTS=F,ifAnova=F,skalier
   if(ifTS & !is.character(DTRSP)) mTrSp = Fgev(Serienwerte,nsloc=DTRSP)
 
   #IC
-  AicVec = c(Stat=m0$Aic,Trend=mTr$Aic,Sprung=mSp$Aic,TrendSprung=mTrSp$Aic)
-  BicVec = c(Stat=m0$Bic,Trend=mTr$Bic,Sprung=mSp$Bic,TrendSprung=mTrSp$Bic)
+  if(ifTS){
+    AicVec = c(Stat=m0$Aic,Trend=mTr$Aic,Sprung=mSp$Aic,TrendSprung=mTrSp$Aic)
+    BicVec = c(Stat=m0$Bic,Trend=mTr$Bic,Sprung=mSp$Bic,TrendSprung=mTrSp$Bic)
+  }else{
+    AicVec = c(Stat=m0$Aic,Trend=mTr$Aic,Sprung=mSp$Aic)
+    BicVec = c(Stat=m0$Bic,Trend=mTr$Bic,Sprung=mSp$Bic)
+  }
   AicRes = names(which.min(AicVec))
   BicRes = names(which.min(BicVec))
 

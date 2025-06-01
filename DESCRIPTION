@@ -2,9 +2,9 @@ Package: Nextreme
 Type: Package
 Title: Statistische Analyse der Niederschlagsextremwerte nach Arbeitsblatt DWA-A 531
 Version: 1.2.1
-Author: Dr.-Ing. Bora Shehu, Dr.-Ing. Winfrid Willems, Thomas Junghaenel, Jennifer Oestermoeller, Angelika Palarz 
+Author: Dr.-Ing. Bora Shehu, Dr.-Ing. Winfrid Willems, Thomas Junghaenel, Jennifer Ostermoeller, Angelika Palarz 
 Maintainer: Bora Shehu <bora.shehu@uni-potsdam.de>, Thomas Junghaenel <Thomas.Junghaenel@dwd.de>
-Description: Dieses Paket wird zusammen mit dem DWA-A 531 Arbeitsblatt zur Verfuegung gestellt und dient als Grundlage für die Berechnung lokaler Niederschlagsextremstatistiken in Deutschland. Lokal bedeutet, dass Niederschlagsbeobachtungen in 5min-Zeitschritten zur Anpassung der Extremwertverteilung verwendet werden. Die Theorie und die Begründung der Methoden sind im DWA-A 531 Arbeitsblatt beschrieben. Alternativ ermoeglicht es das Paket, Extremwerte und die berechneten Niederschlagsstatistiken aus den KOSTRA-DWD-2020 Karten (bereitgestellt vom Deutschen Wetterdienst CDC - Climate Data Center) zu lesen. Bitte beachten Sie, dass das R-Paket nicht von einem IT-Ingenieur entwickelt wurde und daher moeglicherweise nicht den besten Schreibstrategien folgt oder nicht viel Flexibilitaet bietet. Um sicher zu gehen, dass die Funktionen so laufen, wie sie sollen, halten Sie sich bitte an das angegebene Datenformat! 
+Description: Dieses Paket wird zusammen mit dem DWA-A 531 Arbeitsblatt zur Verfuegung gestellt und dient als Grundlage für stationsbasierte Auswertungen in Deutschland. Das bedeutet, dass Niederschlagsbeobachtungen in 5min-Zeitschritten zur Anpassung der Extremwertverteilung verwendet werden. Die Theorie und die Begründung der Methoden sind im DWA-A 531 Arbeitsblatt beschrieben. Alternativ ermoeglicht es das Paket, Extremwerte und die berechneten Niederschlagsstatistiken aus den KOSTRA-DWD-2020 Daten (bereitgestellt vom Deutschen Wetterdienst CDC - Climate Data Center) zu lesen. Bitte beachten Sie, dass das R-Paket nicht von einem IT-Ingenieur entwickelt wurde und daher moeglicherweise nicht den besten Programmierstandards folgt oder nicht viel Flexibilitaet bietet. Um sicher zu gehen, dass die Funktionen so laufen, wie sie sollen, halten Sie sich bitte an das angegebene Datenformat! 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Quantil_Schaetzung.R
 \name{Quantil_Schaetzung}
 \alias{Quantil_Schaetzung}
-\title{Berechnung Starkniederschlaege fuer bestimmte Dauern und Wiederkehrintervalle}
+\title{Berechnung Starkregenhoehen fuer bestimmte Dauern und Wiederkehrintervalle}
 \usage{
 Quantil_Schaetzung(
   extrem.Parameter,
@@ -19,7 +19,7 @@ Quantil_Schaetzung(
 
 \item{Tn}{die Wiederkehrintervalle, fuer die die Regenhoehe berechnet werden soll. Die Wiederkehrintervalle sollte in Jahren angegeben werden!}
 
-\item{methGEV}{den Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Serien angepasst wurde. Die Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Form-Parameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Form-Parameter ist gleich Null - also Gumberl Verteilung.)}
+\item{methGEV}{den Typ der Generalized Extreme Value-Verteilung, die an die jaehrlichen Serien angepasst wurde. Die Optionen sind: "GEV" fuer Typ 2 oder Typ 3 (Formparameter ist nicht gleich Null) und "GUM" fuer Typ 1 (Formparameter ist gleich Null - also Gumber Verteilung.)}
 
 \item{SerieTyp}{Kontrolle ueber die Einheiten der Ausgabetabelle. Die Optionen sind: "VOL" fuer Regenhoehe in mm/Dauer, und "INT" fuer Regenintensitaet in mm/h.}
 }
@@ -30,14 +30,14 @@ Eine Tabelle im Dataframe-Format, die entweder die Regenhoehe-Dauer-Wiederkehrin
 Berechnung der Starkniederschlaege (entweder in Volumen mm oder Intensitaet mm/h) fuer bestimmte Dauern (z.B. 5, 10, 60 und 120min) und Wiederkehrintervalle (z.B. 5, 10 und 100 Jahren), wenn die Parameter, die die Extremwerte beschreiben, bereits bekannt sind.
 }
 \details{
-R-Funktion zur Ableitung der Regenhoehe (hN) oder Regenintesitaet (rN) fuer die gegebenen Extremwertparameter (sowohl GEV- als auch Koutsoyiannis-Parameter), Dauern und Wiederkehrintervalle, nur fuer eine einzelne Station.
+R-Funktion zur Ableitung der Regenhoehe (hN) oder Regenintesitaet (iN) fuer die gegebenen Extremwertparameter (sowohl GEV- als auch Koutsoyiannis-Parameter), Dauern und Wiederkehrintervalle, nur fuer eine einzelne Station.
 }
 \examples{
 # Berechnung der Starkregenparameter fuer die Station Goerlitz im Zeitraum 1991-2020
 # ohne Intervall-oder Sprungkorrektur
 # ueber alle Dauern mit der GEV-Verteilung und dem Formparameter von -0,1
 Dauern=c(5, 10, 15,30,60,120,360,720,1440, 2880, 4320, 10080)
-extremParameter = Parameter_Schaetzung(Goerlitz_iN,Dauern, methGEV="GEV", formTyp="FIX", Gamma=-0.1)
+extremParameter = Parameter_Schaetzung(Goerlitz_maxIntSerie,Dauern, methGEV="GEV", formTyp="FIX", Gamma=-0.1)
 print(extremParameter)
 # Berechnung der Regenintensitaet-Dauer-Wiederkehrintervall Tabelle
 # fuer 6 Wiederkehrintervalle und 12 Dauern von der berechneten Parameter

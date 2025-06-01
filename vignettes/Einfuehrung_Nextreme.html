@@ -391,11 +391,15 @@ Ergebnisse der lokalen Extremwertanalyse, die fuer die Station Goerlitz
 durchgefuehrt wurde, zu analysieren und grafisch darzustellen. Die
 angegebenen Codebeispiele koennen in das geoeffnete R-Skript eingefuegt
 und gespeichert werden.</p>
+<p>Als erstes sollten Sie sicherstellen, dass alle von Nextreme
+verwendeten Pakete in Ihrem Rstudio / R installiert sind:</p>
+<pre class="r"><code>install.packages(&quot;lmomco&quot;)
+install.packages(&quot;lubridate&quot;)
+install.packages(&quot;terra&quot;)
+install.packages(&quot;evd&quot;)
+install.packages(&quot;scales&quot;)</code></pre>
 <p>Als naechstes ist es erforderlich, dass fuer das Arbeitsblatt DWA-A
 531 entwickelte R-Paket „Nextreme“ zu installieren und einzubinden.</p>
-<p><strong>Es ist wichtig zu beachten, dass Nextreme nur auf Windows-
-und Mac-Betriebssystemen installiert werden kann. Linux wird noch nicht
-unterstuetzt.</strong></p>
 <ol style="list-style-type: lower-alpha">
 <li><p>Das Paket kann aus der bereitgestellten Archiv-Datei
 (Nextreme.zip) mit folgenden Schritten installiert werden: Tools &gt;
@@ -463,7 +467,7 @@ Werte plausibel sind (keine sehr hohen Werte).</p>
 <pre class="r"><code># Ueberpruefung der Struktur der 5-Minuten-Zeitreihe
 str(Regendaten_01684)
 #&gt; &#39;data.frame&#39;:    3155904 obs. of  2 variables:
-#&gt;  $ Datum: POSIXct, format: &quot;1991-01-01 00:00:00&quot; &quot;1991-01-01 00:05:00&quot; &quot;1991-01-01 00:10:00&quot; ...
+#&gt;  $ Datum: POSIXct, format: &quot;1991-01-01 00:00:00&quot; ...
 #&gt;  $ RH   : num  NA NA NA NA NA NA NA NA NA NA ...
 # Ueberpruefung, ob die Datumdaten kontinuierlich sind
 unique(diff(Regendaten_01684$Datum))
@@ -494,24 +498,35 @@ Extremwertverteilung zu ermitteln, sind die maximalen jaehrlichen
 Regensintensitaeten fuer jede Dauer erforderlich. Aus diesem Grund geben
 wir <em>SerieTyp=„INT“</em> an, um die maximalen Intensitaeten als
 Ausgabe zu erhalten.</p>
-<pre class="r"><code>Goerlitz_maxSerie = jaehrliche_maxSerie(Regendaten_01684, 
+<pre class="r"><code>Goerlitz_maxIntSerie = jaehrliche_maxSerie(Regendaten_01684, 
                                         Dauern = c(5, 10,15,30,60,120,360,720,
                                                    1440, 2880,4320, 10080), 
                                         DSDmin=240, Intervall = 5,
                                         SerieTyp = &quot;INT&quot;)
-print(head(Goerlitz_maxSerie,10))
-#&gt;            5      10     15     30     60    120   360   720  1440  2880  4320 10080
-#&gt; 1991  59.304  46.644 38.524 21.626 12.601  6.326 3.695 2.576 1.823 0.914 0.622 0.301
-#&gt; 1992  37.464  37.170 27.596 16.270 10.300  9.343 5.463 2.745 1.401 0.815 0.561 0.270
-#&gt; 1993  56.400  40.800 45.600 28.200 21.900 11.850 6.169 4.512 3.618 1.890 1.300 0.829
-#&gt; 1994  76.800  52.200 40.000 23.148 18.258 17.061 8.084 4.192 2.104 1.096 0.736 0.349
-#&gt; 1995  82.800  81.600 62.800 36.200 19.600  9.900 5.438 3.793 2.383 1.240 0.865 0.561
-#&gt; 1996  74.400  42.600 30.800 16.400 10.400  7.700 4.083 2.767 2.404 1.219 0.812 0.571
-#&gt; 1997  84.000  65.394 52.316 27.820 15.986  8.253 4.167 2.725 2.092 1.071 0.807 0.452
-#&gt; 1998  60.000  48.000 38.800 26.000 14.500  9.000 4.233 2.292 1.675 0.927 0.701 0.564
-#&gt; 1999 110.400  75.600 60.400 40.800 22.700 11.350 3.783 2.142 1.358 0.773 0.581 0.295
-#&gt; 2000 191.256 118.338 88.852 50.998 25.499 12.799 5.333 3.042 1.708 1.104 0.736 0.401</code></pre>
-<p>Die Variable <em>Goerlitz_maxSerie</em> ist eine Tabelle mit der
+print(head(Goerlitz_maxIntSerie,10))
+#&gt;            5      10     15     30     60    120   360   720
+#&gt; 1991  59.304  46.644 38.524 21.626 12.601  6.326 3.695 2.576
+#&gt; 1992  37.464  37.170 27.596 16.270 10.300  9.343 5.463 2.745
+#&gt; 1993  56.400  40.800 45.600 28.200 21.900 11.850 6.169 4.512
+#&gt; 1994  76.800  52.200 40.000 23.148 18.258 17.061 8.084 4.192
+#&gt; 1995  82.800  81.600 62.800 36.200 19.600  9.900 5.438 3.793
+#&gt; 1996  74.400  42.600 30.800 16.400 10.400  7.700 4.083 2.767
+#&gt; 1997  84.000  65.394 52.316 27.820 15.986  8.253 4.167 2.725
+#&gt; 1998  60.000  48.000 38.800 26.000 14.500  9.000 4.233 2.292
+#&gt; 1999 110.400  75.600 60.400 40.800 22.700 11.350 3.783 2.142
+#&gt; 2000 191.256 118.338 88.852 50.998 25.499 12.799 5.333 3.042
+#&gt;       1440  2880  4320 10080
+#&gt; 1991 1.823 0.914 0.622 0.301
+#&gt; 1992 1.401 0.815 0.561 0.270
+#&gt; 1993 3.618 1.890 1.300 0.829
+#&gt; 1994 2.104 1.096 0.736 0.349
+#&gt; 1995 2.383 1.240 0.865 0.561
+#&gt; 1996 2.404 1.219 0.812 0.571
+#&gt; 1997 2.092 1.071 0.807 0.452
+#&gt; 1998 1.675 0.927 0.701 0.564
+#&gt; 1999 1.358 0.773 0.581 0.295
+#&gt; 2000 1.708 1.104 0.736 0.401</code></pre>
+<p>Die Variable <em>Goerlitz_maxIntSerie</em> ist eine Tabelle mit der
 maximalen Intensitaet (mm/h), die bei verschiedenen Dauern (in Spalten)
 und Jahren (in Zeilen) ermittelt wurde.</p>
 </div>
@@ -524,19 +539,30 @@ Zu diesem Zweck kann die Funktion <em>Intervallkorrektur()</em>
 verwendet werden. Da die Regendaten in 5-Minuten-Zeitschritten gegeben
 sind, wird das Intervallargument (<em>Intervall</em>) auf 5 gesetzt und
 damit Dauerstufen bis 20 min bei der Korrektur beruecksichtigt.</p>
-<pre class="r"><code>Goerlitz_maxSerie    = Intervallkorrektur(Goerlitz_maxSerie, Intervall = 5)
-print(head(Goerlitz_maxSerie,10))
-#&gt;              5        10       15     30     60    120   360   720  1440  2880  4320 10080
-#&gt; 1991  67.60656  49.90908 40.06496 21.626 12.601  6.326 3.695 2.576 1.823 0.914 0.622 0.301
-#&gt; 1992  42.70896  39.77190 28.69984 16.270 10.300  9.343 5.463 2.745 1.401 0.815 0.561 0.270
-#&gt; 1993  64.29600  43.65600 47.42400 28.200 21.900 11.850 6.169 4.512 3.618 1.890 1.300 0.829
-#&gt; 1994  87.55200  55.85400 41.60000 23.148 18.258 17.061 8.084 4.192 2.104 1.096 0.736 0.349
-#&gt; 1995  94.39200  87.31200 65.31200 36.200 19.600  9.900 5.438 3.793 2.383 1.240 0.865 0.561
-#&gt; 1996  84.81600  45.58200 32.03200 16.400 10.400  7.700 4.083 2.767 2.404 1.219 0.812 0.571
-#&gt; 1997  95.76000  69.97158 54.40864 27.820 15.986  8.253 4.167 2.725 2.092 1.071 0.807 0.452
-#&gt; 1998  68.40000  51.36000 40.35200 26.000 14.500  9.000 4.233 2.292 1.675 0.927 0.701 0.564
-#&gt; 1999 125.85600  80.89200 62.81600 40.800 22.700 11.350 3.783 2.142 1.358 0.773 0.581 0.295
-#&gt; 2000 218.03184 126.62166 92.40608 50.998 25.499 12.799 5.333 3.042 1.708 1.104 0.736 0.401</code></pre>
+<pre class="r"><code>Goerlitz_maxIntSerie    = Intervallkorrektur(Goerlitz_maxIntSerie, Intervall = 5)
+print(head(Goerlitz_maxIntSerie,10))
+#&gt;              5        10       15     30     60    120   360
+#&gt; 1991  67.60656  49.90908 40.06496 21.626 12.601  6.326 3.695
+#&gt; 1992  42.70896  39.77190 28.69984 16.270 10.300  9.343 5.463
+#&gt; 1993  64.29600  43.65600 47.42400 28.200 21.900 11.850 6.169
+#&gt; 1994  87.55200  55.85400 41.60000 23.148 18.258 17.061 8.084
+#&gt; 1995  94.39200  87.31200 65.31200 36.200 19.600  9.900 5.438
+#&gt; 1996  84.81600  45.58200 32.03200 16.400 10.400  7.700 4.083
+#&gt; 1997  95.76000  69.97158 54.40864 27.820 15.986  8.253 4.167
+#&gt; 1998  68.40000  51.36000 40.35200 26.000 14.500  9.000 4.233
+#&gt; 1999 125.85600  80.89200 62.81600 40.800 22.700 11.350 3.783
+#&gt; 2000 218.03184 126.62166 92.40608 50.998 25.499 12.799 5.333
+#&gt;        720  1440  2880  4320 10080
+#&gt; 1991 2.576 1.823 0.914 0.622 0.301
+#&gt; 1992 2.745 1.401 0.815 0.561 0.270
+#&gt; 1993 4.512 3.618 1.890 1.300 0.829
+#&gt; 1994 4.192 2.104 1.096 0.736 0.349
+#&gt; 1995 3.793 2.383 1.240 0.865 0.561
+#&gt; 1996 2.767 2.404 1.219 0.812 0.571
+#&gt; 1997 2.725 2.092 1.071 0.807 0.452
+#&gt; 1998 2.292 1.675 0.927 0.701 0.564
+#&gt; 1999 2.142 1.358 0.773 0.581 0.295
+#&gt; 2000 3.042 1.708 1.104 0.736 0.401</code></pre>
 </div>
 <div id="stationaritaet-und-sprungkorrektur-bei-kleinen-dauerstufen" class="section level3">
 <h3>2.3 Stationaritaet und Sprungkorrektur bei kleinen Dauerstufen</h3>
@@ -555,13 +581,13 @@ Hier wird dieser Schritt nur gezeigt, um einen vollstaendigen
 Arbeitsablauf darzulegen!</p>
 <p>Zu diesem Zweck kann die Funktion <em>Sprung_Korrektur()</em>
 verwendet werden. Zusaetzlich zur Eingabe der jaehrlichen Serie
-(<em>Goerlitz_maxSerie</em>) benoetigt die Funktion das Datum des
+(<em>Goerlitz_maxIntSerie</em>) benoetigt die Funktion das Datum des
 Sensorwechsels in einer Variablen vom Typ <em>Date()</em>.</p>
 <pre class="r"><code>WechselDatum = as.Date(&quot;1991-01-01&quot;, format=c(&quot;%Y-%m-%d&quot;))
-Goerlitz_maxSerie_korrigiert    = Sprung_Korrektur(Goerlitz_maxSerie,
+Goerlitz_maxSerie_korrigiert    = Sprung_Korrektur(Goerlitz_maxIntSerie,
                                                    WechselDatum)
 # Die Differenz vor und nach der Funktion sprungKorrektur() ueberpruefen.
-print(head(round(Goerlitz_maxSerie_korrigiert-Goerlitz_maxSerie,0),10))
+print(head(round(Goerlitz_maxSerie_korrigiert-Goerlitz_maxIntSerie,0),10))
 #&gt;      5 10 15 30 60 120 360 720 1440 2880 4320 10080
 #&gt; 1991 0  0  0  0  0   0   0   0    0    0    0     0
 #&gt; 1992 0  0  0  0  0   0   0   0    0    0    0     0
@@ -615,7 +641,7 @@ beruecksichtigt). In allen Faellen werden die maximalen Intensitaeten
 ueber die gegebene Dauer normalisiert. Die Funktion
 <em>Parameter_Schaetzung()</em> kann nicht GEV-Verteilungen individuell
 an jede Dauer anpassen!</p>
-<pre class="r"><code>N_pars      = Parameter_Schaetzung(Goerlitz_maxSerie, 
+<pre class="r"><code>N_pars      = Parameter_Schaetzung(Goerlitz_maxIntSerie, 
                                    Dauern = c(5, 10, 15,30,60,120,360,720,1440, 
                                               2880,4320, 10080), 
                                    methGEV=&quot;GEV&quot;, formTyp = &quot;FIX&quot;, Gamma = -0.1,
@@ -653,13 +679,20 @@ mm/h).</p>
                                  Tn =c(2,5,10,20,50,100), 
                                  methGEV=&quot;GEV&quot;,SerieTyp = &quot;VOL&quot;)
 print(H_quas)
-#&gt;         5    10    15    30    60   120   360   720   1440   2880   4320  10080
-#&gt; 2    7.38 10.52 12.50 16.09 19.97 24.30 32.46 38.76  46.08  55.20  61.20  75.60
-#&gt; 5    9.42 13.42 15.96 20.54 25.50 31.00 41.46 49.44  59.04  70.08  77.76  95.76
-#&gt; 10  11.21 15.97 18.98 24.43 30.34 36.90 49.32 58.92  70.08  83.52  92.16 114.24
-#&gt; 20  12.81 18.25 21.70 27.93 34.67 42.16 56.34 67.32  80.16  95.52 105.84 131.04
-#&gt; 50  15.41 21.96 26.11 33.60 41.72 50.74 67.80 81.00  96.48 114.72 127.44 157.92
-#&gt; 100 17.52 24.98 29.69 38.22 47.44 57.70 77.10 92.04 109.68 130.56 144.72 178.08</code></pre>
+#&gt;         5    10    15    30    60   120   360   720   1440
+#&gt; 2    7.38 10.52 12.50 16.09 19.97 24.30 32.46 38.76  46.08
+#&gt; 5    9.42 13.42 15.96 20.54 25.50 31.00 41.46 49.44  59.04
+#&gt; 10  11.21 15.97 18.98 24.43 30.34 36.90 49.32 58.92  70.08
+#&gt; 20  12.81 18.25 21.70 27.93 34.67 42.16 56.34 67.32  80.16
+#&gt; 50  15.41 21.96 26.11 33.60 41.72 50.74 67.80 81.00  96.48
+#&gt; 100 17.52 24.98 29.69 38.22 47.44 57.70 77.10 92.04 109.68
+#&gt;       2880   4320  10080
+#&gt; 2    55.20  61.20  75.60
+#&gt; 5    70.08  77.76  95.76
+#&gt; 10   83.52  92.16 114.24
+#&gt; 20   95.52 105.84 131.04
+#&gt; 50  114.72 127.44 157.92
+#&gt; 100 130.56 144.72 178.08</code></pre>
 <p>Die zurueckgegebene Variable <em>H_quas</em> ist eine Tabelle
 (Dataframe-Format) mit den Wiederkehrintervallen in verschiedenen Zeilen
 und der Dauer in verschiedenen Spalten. Da in diesem Fall der
@@ -686,7 +719,7 @@ diese Weise erhaelt man <em>nBoots</em> Realisierungen der Parameter,
 die als Grundlage fuer die Berechnung von Konfidenzintervallen nicht nur
 der Parameter, sondern auch der Quantile verwendet werden koennen.</p>
 <p><strong>Dies kann mehrere Minuten dauern!</strong></p>
-<pre class="r"><code>KI          = Unsicherheit_Schaetzung(Goerlitz_maxSerie,
+<pre class="r"><code>KI          = Unsicherheit_Schaetzung(Goerlitz_maxIntSerie,
                                   Tn =c(2,5,10,20,50,100),
                                   Dauern = c(5, 10, 15,30,60,120,360,720,1440,
                                              2880, 4320, 10080),
