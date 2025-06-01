@@ -21,4 +21,5 @@ Tools -> Install Packages -> Install from: Package Archieve File
 ## Beispiele
 
 Eine Einfuehrung in das Paket mit entsprechenden Beispielen findet sich unter "vignettes/Einfuerung_Nextreme.pdf".
+
 Eine Liste aller verfügbaren Funktionen und kurze Beispiele finden Sie unter „Manual_Nextreme.pdf“.
