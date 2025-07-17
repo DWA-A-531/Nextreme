@@ -4,3 +4,5 @@
 ^README\.md$
 ^Manual_Nextreme\.pdf$
 ^Einfuehrung_Nextreme\.pdf$
+^build$
+^inst/doc$
